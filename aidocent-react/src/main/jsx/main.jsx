@@ -1,4 +1,5 @@
 import Upload from './upload';
+import { Link } from "react-router-dom";
 
 const Main = () => {
 
@@ -24,6 +25,9 @@ const Main = () => {
         <div>
             <h1>메인화면 입니다.</h1>
             <Upload uploadFile={handleUploadFile}/>
+            <Link to="/chat">
+                <button>채팅 화면으로 이동</button>
+            </Link>
         </div>
     );
 };
