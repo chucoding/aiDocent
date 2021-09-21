@@ -2,7 +2,6 @@ import { useState} from 'react';
 import Chat from 'react-simple-chat';
 import 'react-simple-chat/src/components/index.css';
 
-//https://www.npmjs.com/package/react-simple-chat
 const Messenger = () => {
     const [messages, setMessages] = useState([
         {
@@ -12,7 +11,6 @@ const Messenger = () => {
             user: { id: 'user'}
         }
     ]);
-
 
     const getAnswer = (message) => {
         setMessages([...messages, message]);
