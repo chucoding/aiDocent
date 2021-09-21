@@ -19,7 +19,7 @@ const Messenger = () => {
     const getAnswer = (message) => {
         setMessages([...messages, message]);
         const url = `http://localhost:8080/aidocent/chat/message`;
-        fetch(url, {method:"POST", body: JSON.stringify({ data: messages }), headers:{"Access-Control-Allow-Origin":"*"} })
+        fetch(url, {method:"POST", body: JSON.stringify({ data: message }), headers:{"Access-Control-Allow-Origin":"*", "content-type":"application/json"} })
             .then((res) => res.json())
             .then((data) => {
                 setMessages(messages => [...messages, data]);

@@ -18,7 +18,7 @@ public class ChatDao {
 	
 	public Map open() {
 		Map<String, Object> params = new HashMap<String, Object>();
-		Map<String, String> argument = new HashMap<>();
+		Map<String, String> argument = new HashMap<String, String>();
 		
 		argument.put("name", "Genie_Pizza");
 		argument.put("access_method", "internal_data");
@@ -34,8 +34,30 @@ public class ChatDao {
 		RestTemplate rt = new RestTemplate();
 		Map resp = rt.postForObject(OPEN_API_URL, entity, Map.class);
 		
-		System.out.println(resp);
 		return resp;
 		//throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	public Map message(Map map) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		Map<String, String> argument = new HashMap<String, String>();
+		
+		System.out.println(map);
+		argument.put("uuid", (String) map.get("uuid"));
+		argument.put("text", (String) map.get("text"));
+		argument.put("method", "dialog");
+	
+		params.put("access_key",ACCESS_KEY);
+		params.put("argument", argument);
+		
+		HttpHeaders headers = new HttpHeaders();
+		
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<Map> entity = new HttpEntity<Map>(params, headers);
+		RestTemplate rt = new RestTemplate();
+		Map resp = rt.postForObject(OPEN_API_URL, entity, Map.class);
+		System.out.println(resp);
+		
+		return resp;
 	}
 }

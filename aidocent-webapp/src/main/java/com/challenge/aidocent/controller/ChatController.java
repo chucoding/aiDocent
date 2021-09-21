@@ -1,14 +1,13 @@
 package com.challenge.aidocent.controller;
 
-import java.util.Locale;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.challenge.aidocent.service.ChatService;
@@ -21,17 +20,14 @@ public class ChatController {
 	
 	@CrossOrigin("*")
 	@PostMapping(value = "/chat/open")
-	public Map open(Locale locale, Model model) {
+	public Map open() {
 		return chatService.open();
 	}
 	
 	@CrossOrigin("*")
 	@PostMapping(value = "/chat/message")
-	public Map message(Locale locale, Model model) {
+	public Map message(@RequestBody Map<String, Object> data) {
 		logger.info("메시지 불러오기 ");
-		//Map map = chatService.open();
-		//System.out.println(map);
-		return null;
+		return chatService.message(data);
 	}
-	
 }
