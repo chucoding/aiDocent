@@ -20,12 +20,18 @@ public class ChatController {
 	@Autowired ChatService chatService;
 	
 	@CrossOrigin("*")
+	@PostMapping(value = "/chat/open")
+	public Map open(Locale locale, Model model) {
+		return chatService.open();
+	}
+	
+	@CrossOrigin("*")
 	@PostMapping(value = "/chat/message")
 	public Map message(Locale locale, Model model) {
 		logger.info("메시지 불러오기 ");
-		Map map = chatService.open();
-		System.out.println(map);
-		return map;
+		//Map map = chatService.open();
+		//System.out.println(map);
+		return null;
 	}
 	
 }

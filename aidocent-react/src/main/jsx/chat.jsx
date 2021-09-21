@@ -1,16 +1,20 @@
-import { useState} from 'react';
+import { useEffect, useState} from 'react';
 import Chat from 'react-simple-chat';
 import 'react-simple-chat/src/components/index.css';
 
 const Messenger = () => {
-    const [messages, setMessages] = useState([
-        {
-            id: 'chatbot',
-            text: '안녕하세요 궁금한 것을 물어보세요.',
-            createdAt: new Date(),
-            user: { id: 'user'}
-        }
-    ]);
+    const [messages, setMessages] = useState([]);
+
+    const openChat = () => {
+        const url = `http://localhost:8080/aidocent/chat/open`;
+        fetch(url, {method:"POST", headers:{"Access-Control-Allow-Origin":"*"} })
+            .then((res) => res.json())
+            .then((data) => {
+                setMessages(messages => [...messages, data]);
+            }).catch(() => {
+                console.log("에러발생");
+            });
+    };
 
     const getAnswer = (message) => {
         setMessages([...messages, message]);
@@ -23,6 +27,8 @@ const Messenger = () => {
                 console.log("에러발생");
             });
     };
+
+    useEffect(openChat,[]);
 
     return(
         <Chat
