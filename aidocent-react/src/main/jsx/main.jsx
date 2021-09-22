@@ -20,15 +20,16 @@ const Main = () => {
             });
         };
 
-
     return(
-        <div>
-            <h1>메인화면 입니다.</h1>
-            <Upload uploadFile={handleUploadFile}/>
+        <>
+            <div style={{textAlign:'center'}}>
+                <h1>이미지를 업로드 해주세요.</h1>
+                <Upload uploadFile={handleUploadFile}/>
+            </div>
             <Link to="/chat">
-                <button>채팅 화면으로 이동</button>
+                <button>채팅창으로 이동</button>
             </Link>
-        </div>
+        </>
     );
 };
 

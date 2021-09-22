@@ -1,5 +1,7 @@
 import React from "react";
 import { useDropzone } from 'react-dropzone';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { textAlign } from "@mui/system";
 
 const FileUpload = (props) => {
 
@@ -32,10 +34,11 @@ const FileUpload = (props) => {
     });
 
     return (
-        <div className="open-file-box clearfix">
+        <div className="open-file-box clearfix" style={{background:'yellow', height:'80px', width:'1000px', display:'inline-block'}}>
             <div className='open-file' { ...getRootProps() } style={{marginTop:20}}>
                 <input { ...getInputProps() }/>
-                <span className="icon">파일을 여기로 끌어오거나 파일선택 버튼을 눌러주세요.</span>
+                <CloudUploadIcon/>
+                <span>파일을 여기로 끌어오거나 파일선택 버튼을 눌러주세요.</span>
                 <button className="btn btn-brown tline w100 pos" onClick={ open }>파일 선택...</button>
             </div>
         </div>
