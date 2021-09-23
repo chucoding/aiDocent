@@ -1,6 +1,7 @@
 import React, {Suspense, lazy} from 'react';
 import ReactDOM from 'react-dom';
 import { Route, Switch, HashRouter as Router } from 'react-router-dom';
+import './main/resources/css/style.css';
 
 const App = () => {
 

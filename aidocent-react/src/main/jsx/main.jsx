@@ -22,7 +22,8 @@ const Main = () => {
 
     return(
         <>
-            <div style={{textAlign:'center'}}>
+            <div className='upload'>
+                <h1 style={{fontSize:'8em'}}>AIDOCENT</h1>
                 <h1>이미지를 업로드 해주세요.</h1>
                 <Upload uploadFile={handleUploadFile}/>
             </div>

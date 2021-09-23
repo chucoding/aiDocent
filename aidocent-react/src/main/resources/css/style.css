@@ -1,0 +1,20 @@
+html { 
+    background: url(../img/snow.jpg) no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.upload {
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.upload > .open-file-box {
+    border-style: dashed;
+    border-width: 2px;
+}

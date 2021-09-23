@@ -34,7 +34,7 @@ const FileUpload = (props) => {
     });
 
     return (
-        <div className="open-file-box clearfix" style={{background:'yellow', height:'80px', width:'1000px', display:'inline-block'}}>
+        <div className="open-file-box clearfix" style={{height:'80px', width:'1000px', display:'inline-block', verticalAlign:'center'}}>
             <div className='open-file' { ...getRootProps() } style={{marginTop:20}}>
                 <input { ...getInputProps() }/>
                 <CloudUploadIcon/>
