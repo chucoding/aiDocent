@@ -26,7 +26,6 @@ public class GoogleService {
 
 	public String TTS(HttpServletRequest req, String text) throws Exception {
 		String folder_name = req.getSession().getServletContext().getRealPath("/") + "/resources/tts";
-
 		return dao.synthesizeText(folder_name, text);
 	}
 }

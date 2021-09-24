@@ -11,12 +11,12 @@ import org.springframework.http.MediaType;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-public class ChatDao {
+public class EntriDao {
 
 	private static final String OPEN_API_URL = "http://aiopen.etri.re.kr:8000/Dialog";
 	private static final String ACCESS_KEY = "417ac904-4b08-4ba6-9f5e-ea214b0994ad";
 	
-	public Map open() {
+	public Map chatopen() {
 		Map<String, Object> params = new HashMap<String, Object>();
 		Map<String, String> argument = new HashMap<String, String>();
 		
@@ -38,7 +38,7 @@ public class ChatDao {
 		//throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	public Map message(Map map) {
+	public Map chatmessage(Map map) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		Map<String, String> argument = new HashMap<String, String>();
 		

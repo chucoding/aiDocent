@@ -9,18 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.challenge.aidocent.dao.ChatDao;
+import com.challenge.aidocent.dao.EntriDao;
 import com.challenge.aidocent.util.CacheUtils;
 
 
 @Service
-public class ChatService {
+public class EntriService {
 	
 	@Autowired CacheUtils cache;
 	
-	public Map open() {
-		ChatDao chatDao = new ChatDao();
-		Map resp = chatDao.open();
+	public Map chatopen() {
+		EntriDao chatDao = new EntriDao();
+		Map resp = chatDao.chatopen();
 		Map return_object = MapUtils.getMap(resp, "return_object");
 		String uuid = MapUtils.getString(return_object,"uuid");
 		
@@ -28,8 +28,8 @@ public class ChatService {
 		return makeTemplate(resp);
 	}
 	
-	public Map message(Map<String, Object> data) {
-		ChatDao chatDao = new ChatDao();
+	public Map chatmessage(Map<String, Object> data) {
+		EntriDao chatDao = new EntriDao();
 		Map map = MapUtils.getMap(data, "data");
 		
 		String uuid = (String) cache.get("uuid");
@@ -43,7 +43,7 @@ public class ChatService {
 			chatbotInfo.put("id","user");
 			
 			expireMap.put("id","chatbot");
-			expireMap.put("text","¼¼¼ÇÀÌ ¸¸·áµÇ¾ú½À´Ï´Ù.");
+			expireMap.put("text","ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
 			expireMap.put("createdAt",new Date());
 			expireMap.put("user",chatbotInfo);
 			
@@ -51,7 +51,7 @@ public class ChatService {
 		}
 			
 		map.put("uuid", uuid);
-		return makeTemplate(chatDao.message(map));
+		return makeTemplate(chatDao.chatmessage(map));
 	}
 	
 	private Map makeTemplate(Map resp) {
