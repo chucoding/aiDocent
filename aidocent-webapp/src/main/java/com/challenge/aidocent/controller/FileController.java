@@ -15,10 +15,8 @@ public class FileController {
 	@CrossOrigin("*")
 	@PostMapping(value = "/files")
 	public void upload(MultipartFile file) throws Exception {
-		logger.info("���� ���ε�");
-		// 서버에 파일 저장
-		// 객체 검출
-		// 번역
+
+		logger.info("파일 업로드");
 		
 	}
 }
