@@ -27,7 +27,7 @@ public class ChatController {
 	@CrossOrigin("*")
 	@PostMapping(value = "/chat/message")
 	public Map message(@RequestBody Map<String, Object> data) {
-		logger.info("¸Þ½ÃÁö ºÒ·¯¿À±â ");
+		logger.info("ë©”ì‹œì§€");
 		return chatService.message(data);
 	}
 }
