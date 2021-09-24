@@ -15,7 +15,7 @@ public class FileController {
 	@CrossOrigin("*")
 	@PostMapping(value = "/files")
 	public void upload(MultipartFile file) throws Exception {
-
+		System.out.println("ff");
 		logger.info("파일 업로드");
 		
 	}
