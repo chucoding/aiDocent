@@ -16,5 +16,14 @@ html {
 
 .upload > .open-file-box {
     border-style: dashed;
-    border-width: 2px;
+    border-width: 4px;
+    border-radius: 20px;
+    height: 200px;
+    width: 1000px;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.upload > .open-file-box > .open-file > span {
+    font-size: 20px;
 }

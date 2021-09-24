@@ -1,7 +1,7 @@
 import React from "react";
 import { useDropzone } from 'react-dropzone';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { textAlign } from "@mui/system";
+import Button from '@mui/material/Button';
 
 const FileUpload = (props) => {
 
@@ -34,14 +34,13 @@ const FileUpload = (props) => {
     });
 
     return (
-        <div className="open-file-box clearfix" style={{height:'80px', width:'1000px', display:'inline-block', verticalAlign:'center'}}>
-            <div className='open-file' { ...getRootProps() } style={{marginTop:20}}>
+        <Button className="open-file-box clearfix"  variant="text" onClick={ open } color="inherit">
+            <div className='open-file' { ...getRootProps() } >
                 <input { ...getInputProps() }/>
                 <CloudUploadIcon/>
-                <span>파일을 여기로 끌어오거나 파일선택 버튼을 눌러주세요.</span>
-                <button className="btn btn-brown tline w100 pos" onClick={ open }>파일 선택...</button>
+                <span>파일을 여기로 끌어오거나 버튼을 눌러주세요.</span>
             </div>
-        </div>
+        </Button>
     );
 };
 
