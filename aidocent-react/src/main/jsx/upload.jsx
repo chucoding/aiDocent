@@ -36,7 +36,7 @@ const FileUpload = (props) => {
     return (
         <Button className="open-file-box clearfix"  variant="text" onClick={ open } color="inherit">
             <div className='open-file' { ...getRootProps() } >
-                <input { ...getInputProps() }/>
+                <input { ...getInputProps() } accept="image/*"/>
                 <CloudUploadIcon/>
                 <span>파일을 여기로 끌어오거나 버튼을 눌러주세요.</span>
             </div>

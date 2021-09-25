@@ -44,9 +44,8 @@ public class GoogleDao {
 			TranslateTextResponse response = client.translateText(request);
 			for (Translation translation : response.getTranslationsList()) {
 				System.out.printf("Translated text: %s\n", translation.getTranslatedText());
-				if (!return_text.isEmpty()) {
-					return_text = "," + translation.getTranslatedText();
-				}
+				return_text = translation.getTranslatedText();
+
 			}
 		}
 		return return_text;

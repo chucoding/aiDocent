@@ -6,15 +6,27 @@ const Main = () => {
     const history = useHistory();
 
     const handleUploadFile = (file) => {
+
+        if (file.type.indexOf("image") !== 0) {
+            alert("이미지 파일만 가능합니다.");
+            return;
+        }
+
         let body = new FormData();
         body.append('file', file);
 
         const url = `http://localhost:8080/aidocent/files`;
 
         fetch(url, { method: "POST", body, headers: { "Access-Control-Allow-Origin": "*" } })
-            .then((response) => {
-                history.push("/chat");
-            }).catch(() => {
+            .then((response) => response.json())
+            .then(data => {
+                console.log(data.path);
+                history.push({
+                    pathname: "/chat",
+                    props: { image_path: data.path, translate: data.translate }
+                });
+            })
+            .catch(() => {
                 console.log("에러발생");
             });
     };
