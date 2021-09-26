@@ -27,3 +27,22 @@ html {
 .upload > .open-file-box > .open-file > span {
     font-size: 20px;
 }
+
+/*채팅창*/
+
+.chat {
+    width: 38%;
+    float: right;
+    margin-right: 1vh;
+}
+
+
+.chat-platform .system-message {
+    width: 200px;
+}
+
+.canvas {
+    width: 58%;
+    float: left;
+    margin-left: 1vh;
+}
