@@ -27,7 +27,6 @@ public class FileController {
 
 	private static final Logger logger = LoggerFactory.getLogger(FileController.class);
 
-	@SuppressWarnings("unchecked")
 	@CrossOrigin("*")
 	@PostMapping(value = "/files")
 	public Map<String, Object> upload(HttpServletRequest req, MultipartFile file) throws Exception {
