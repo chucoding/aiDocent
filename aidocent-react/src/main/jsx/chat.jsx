@@ -58,6 +58,7 @@ const Messenger = ({ location }) => {
                 user={{ id: "chatbot" }}
                 messages={messages}
                 onSend={message => { getAnswer(message); }}
+                inputStyle={{}}
             /></div>
         </div>
     );
