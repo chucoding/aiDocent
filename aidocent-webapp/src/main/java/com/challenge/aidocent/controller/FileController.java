@@ -2,12 +2,14 @@ package com.challenge.aidocent.controller;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -25,13 +27,13 @@ public class FileController {
 
 	private static final Logger logger = LoggerFactory.getLogger(FileController.class);
 
+	@SuppressWarnings("unchecked")
 	@CrossOrigin("*")
 	@PostMapping(value = "/files")
 	public Map<String, Object> upload(HttpServletRequest req, MultipartFile file) throws Exception {
 		EntriService entriservice = new EntriService();
 		GoogleService googleservice = new GoogleService();
 		Map<String, Object> map = new HashMap<String, Object>();
-		logger.info("파일 업로드");
 
 		UUID uuid = UUID.randomUUID();
 		String folder_name = req.getSession().getServletContext().getRealPath("/") + "resources" + File.separator
@@ -48,25 +50,25 @@ public class FileController {
 
 		String result = entriservice.ObjectDetect(req, path);
 		JSONObject json = new JSONObject(result);
-		json = json.getJSONObject("return_object");
-		String token = "";
-		JSONArray jArray = json.getJSONArray("data");
-
-		for (int i = 0; i < jArray.length(); i++) {
-			JSONObject str = jArray.getJSONObject(i);
-			if (i == 0) {
-				token += str.getString("class");
-			} else {
-				token += "," + str.getString("class");
+		
+		JSONObject return_object = json.getJSONObject("return_object");
+		if(!return_object.isEmpty()) {
+			String token = "";
+			JSONArray jArray = return_object.getJSONArray("data");
+			for (int i = 0; i < jArray.length(); i++) {
+				JSONObject str = jArray.getJSONObject(i);
+				if (i == 0) {
+					token += str.getString("class");
+				} else {
+					token += "," + str.getString("class");
+				}
 			}
-
-		}
-
-		String tokens[] = googleservice.translate(token).split(",");
-		int count = 0;
-		for (String str : tokens) {
-			System.out.print(token.split(",")[count] + ":" + str);
-			result = result.replaceAll(token.split(",")[count++], str);
+			String tokens[] = googleservice.translate(token).split(",");
+			int count = 0;
+			for (String str : tokens) {
+				System.out.print(token.split(",")[count] + ":" + str);
+				result = result.replaceAll(token.split(",")[count++], str);
+			}
 		}
 
 		map.put("path", "resources/img/" + file_name);
