@@ -39,7 +39,12 @@ const Chat = () => {
     };
 
     useEffect(openChat, []);
-    
+    /*{
+        position: 'right',
+        type: 'text',
+        text: '안녕하세요',
+        date: new Date(),
+    }*/
     return (
         <div className="chat">
             <Card sx={{height:'96vh', marginTop:'1vh'}}>
@@ -48,14 +53,8 @@ const Chat = () => {
                         className='message-list'
                         lockable={true}
                         toBottomHeight={'100%'}
-                        dataSource={[
-                            {
-                                position: 'right',
-                                type: 'text',
-                                text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit',
-                                date: new Date(),
-                            },
-                    ]} />
+                        dataSource={messages}
+                    />
                 </CardContent>
                 <CardContent>
                     <Input
@@ -68,9 +67,7 @@ const Chat = () => {
                         }
                         rightButtons={
                             <div onClick={()=>{inputRef.current = ""}}>
-                                <IconButton aria-label="전송" >
-                                    <SendIcon/>
-                                </IconButton>
+                                <IconButton aria-label="전송" ><SendIcon/></IconButton>
                             </div>
                         }
                     />
