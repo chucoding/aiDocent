@@ -8,14 +8,15 @@ const ChatMain = ({ location }) => {
         return <Redirect to="/"/>
     } else {
         return (
-            <>
-                <Canvas
-                    imagePath={location.props && location.props.image_path ? location.props.image_path : ""}
-                    translate={location.props && location.props.translate ? location.props.translate : ""}
-                />
-                <Chat/>
-            </>
-        );
+        <>
+            <Canvas
+                imagePath={location.props && location.props.image_path ? location.props.image_path : ""}
+                translate={location.props && location.props.translate ? location.props.translate : ""}
+                vision_text={location.props && location.props.vision_text ? location.props.vision_text : ""}
+            />
+            <Chat />
+        </>
+    	);
     }
 };
 
