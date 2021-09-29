@@ -20,10 +20,10 @@ const Main = () => {
         fetch(url, { method: "POST", body, headers: { "Access-Control-Allow-Origin": "*" } })
             .then((response) => response.json())
             .then(data => {
-                console.log(data.path);
+                console.log(data);
                 history.push({
                     pathname: "/chat",
-                    props: { image_path: data.path, translate: data.translate }
+                    props: { image_path: data.path, translate: data.translate, vision_text: data.vision_text }
                 });
             })
             .catch(() => {

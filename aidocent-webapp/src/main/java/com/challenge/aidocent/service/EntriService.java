@@ -77,10 +77,30 @@ public class EntriService {
 		return map;
 	}
 
-	public String ObjectDetect(HttpServletRequest req, String path) throws IllegalStateException, IOException {
+	public Map ObjectDetect(HttpServletRequest req, MultipartFile file) throws IllegalStateException, IOException {
 
 		EntriDao chatDao = new EntriDao();
-		return chatDao.ObjectDetect(path);
+
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		UUID uuid = UUID.randomUUID();
+		String folder_name = req.getSession().getServletContext().getRealPath("/") + "resources" + File.separator
+				+ "img";
+		String file_name = uuid.toString().replaceAll("-", "")
+				+ file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+		String path = folder_name + File.separator + file_name;
+
+		File Folder = new File(folder_name);
+		if (Folder.exists() == false) {
+			Folder.mkdirs();
+		}
+		file.transferTo(new File(path));
+
+		
+		result.put("file_name", file_name);
+		result.put("body", chatDao.ObjectDetect(path));
+		return result;
+
 	}
 
 	public String wiki(String text) {

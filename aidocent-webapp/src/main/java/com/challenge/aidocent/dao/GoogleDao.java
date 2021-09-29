@@ -26,6 +26,7 @@ import com.google.cloud.translate.v3.TranslationServiceClient;
 import com.google.cloud.vision.v1.AnnotateImageRequest;
 import com.google.cloud.vision.v1.AnnotateImageResponse;
 import com.google.cloud.vision.v1.BatchAnnotateImagesResponse;
+import com.google.cloud.vision.v1.EntityAnnotation;
 import com.google.cloud.vision.v1.Feature;
 import com.google.cloud.vision.v1.Image;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
@@ -71,8 +72,8 @@ public class GoogleDao {
 					System.out.format("Error: %s%n", res.getError().getMessage());
 					return "";
 				}
-				result = res.getTextAnnotations(0).getDescription();
-
+				result = res.getTextAnnotationsList().get(0).getDescription();
+				System.out.println(result);
 			}
 		}
 
