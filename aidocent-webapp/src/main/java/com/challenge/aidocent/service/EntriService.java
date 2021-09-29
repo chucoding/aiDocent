@@ -50,7 +50,7 @@ public class EntriService {
 			chatbotInfo.put("id", "user");
 
 			expireMap.put("id", "chatbot");
-			expireMap.put("text", "������ ����Ǿ����ϴ�.");
+			expireMap.put("text", "세션이 만료되었습니다.");
 			expireMap.put("createdAt", new Date());
 			expireMap.put("user", chatbotInfo);
 
