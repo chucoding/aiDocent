@@ -40,8 +40,8 @@ const AudioRecord = (props) => {
 
       analyser.onaudioprocess = function (e) {
         
-        // 20초 지나면 자동으로 음성 저장 및 녹음 중지(음성 안나오면 자동으로꺼지게도 구현해야됨)
-        if (e.playbackTime > 3) {
+        // 10초 지나면 자동으로 음성 저장 및 녹음 중지(음성 안나오면 자동으로꺼지게도 구현해야됨)
+        if (e.playbackTime > 10) {
           stream.getAudioTracks().forEach(function (track) {
             track.stop();
           });
