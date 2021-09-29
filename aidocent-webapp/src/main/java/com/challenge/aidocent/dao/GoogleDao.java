@@ -81,7 +81,7 @@ public class GoogleDao {
 	}
 
 	// TTS
-	public static String synthesizeText(String folder_name, String text) throws Exception {
+	public static String synthesizeText(String folder_name, String text) {
 		UUID uuid = UUID.randomUUID();
 		String file_name = "";
 		try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
@@ -100,11 +100,15 @@ public class GoogleDao {
 				Folder.mkdirs();
 			}
 			file_name = uuid.toString() + ".mp3";
-			try (OutputStream out = new FileOutputStream(Folder.getPath() + File.pathSeparator + file_name)) {
+			try (OutputStream out = new FileOutputStream(Folder.getPath() + File.separator + file_name)) {
 				out.write(audioContents.toByteArray());
 				System.out.println("Audio content written to file \"" + file_name + "\"");
+			} catch (Exception e) {
+				file_name = "";
 			}
+		} catch (Exception e) {
+			file_name = "";
 		}
-		return file_name;
+		return "resources/tts/"+file_name;
 	}
 }

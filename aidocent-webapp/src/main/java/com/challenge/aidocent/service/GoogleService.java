@@ -25,7 +25,7 @@ public class GoogleService {
 		return dao.detectText(path);
 	}
 
-	public String TTS(HttpServletRequest req, String text) throws Exception {
+	public String TTS(HttpServletRequest req, String text) {
 		GoogleDao dao = new GoogleDao();
 		String folder_name = req.getSession().getServletContext().getRealPath("/") + "resources" + File.separator
 				+ "tts";

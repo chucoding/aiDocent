@@ -2,12 +2,16 @@ package com.challenge.aidocent.controller;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.collections4.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,10 +50,12 @@ public class ChatController {
 
 	@CrossOrigin("*")
 	@PostMapping(value = "/chat/read")
-	public String stt(String text) {
-		logger.info("TTS API 불러오기", text);
-		
-		
-		return null;
+	public Map stt(HttpServletRequest req, @RequestBody Map<String, Object> data) {
+		logger.info("TTS API");
+		System.out.println(data);
+		Map<String, Object> map = new HashedMap<String, Object>();
+		map.put("file_name", googleService.TTS(req, data.get("data").toString()));
+		System.out.println(map);
+		return map;
 	}
 }

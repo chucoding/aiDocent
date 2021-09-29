@@ -15,11 +15,26 @@ const Canvas = (props) => {
     const imagePath = "http://localhost:8080/aidocent/" + props.imagePath;
     const translate = props.translate;
     const canvasRef = useState(null);
+    var tts_path = "http://localhost:8080/aidocent/";
+    var audio = document.createElement("Audio");
     console.log(props.vision_text);
     console.log(props);
 
     const [edit, setEdit] = useState(false);
     const [text, setText] = useState(props.vision_text);
+    const readtts = () => {
+        const url = `http://localhost:8080/aidocent/chat/read`;
+        console.log(text);
+        fetch(url, { method: "POST", body: JSON.stringify({ data: text }), headers: { "Access-Control-Allow-Origin": "*", "content-type": "application/json" } })
+            .then((res) => res.json())
+            .then((data) => {
+                tts_path = tts_path + data.file_name;
+                audio.src = tts_path;
+                audio.play();
+            }).catch(() => {
+                console.log("에러발생");
+            });
+    };
 
     return (
         <div className="canvas">
@@ -45,7 +60,7 @@ const Canvas = (props) => {
                     }
                 </CardContent>
                 <CardActions style={{ float: "right" }}>
-                    <div>
+                    <div onClick={() => readtts()}>
                         <IconButton aria-label="재생">
                             <PlayArrowIcon />
                         </IconButton>
