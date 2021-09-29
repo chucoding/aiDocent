@@ -12,8 +12,8 @@ import AudioRecord from './audio';
 
 const Chat = () => {
     const [messages, setMessages] = useState([]);
-    const inputRef = useRef(null);
     const [inputStyle, setInputStyle] = useState(null);
+    const [question, setQuestion] = useState("");
 
     const openChat = () => {
         const url = `http://localhost:8080/aidocent/chat/open`;
@@ -26,17 +26,26 @@ const Chat = () => {
             });
     };
     
-    const getAnswer = (message) => {
-        setMessages([...messages, message]);
+    const getAnswer = () => {
+        const answer = {
+            position: 'right',
+            type:'text',
+            text:question,
+            date:new Date()
+        };
+
+        console.log(answer);
+
+        setMessages([...messages, answer]);
         const url = `http://localhost:8080/aidocent/chat/message`;
-        fetch(url, { method: "POST", body: JSON.stringify({ data: message }), headers: { "Access-Control-Allow-Origin": "*", "content-type": "application/json" } })
+        fetch(url, { method: "POST", body: JSON.stringify({ data: answer }), headers: { "Access-Control-Allow-Origin": "*", "content-type": "application/json" } })
             .then((res) => res.json())
             .then((data) => {
                 setMessages(messages => [...messages, data]);
             }).catch(() => {
                 console.log("에러발생");
             });
-    };
+   };
 
     useEffect(openChat, []);
     /*{
@@ -58,15 +67,15 @@ const Chat = () => {
                 </CardContent>
                 <CardContent>
                     <Input
-                        ref={el => (inputRef.current = el)}
                         placeholder="메시지를 입력하시오"
                         multiline={false}
                         inputStyle={inputStyle}
+                        onChange={(e)=>setQuestion(e.target.value)}
                         leftButtons={
                             <AudioRecord messages={messages} setMessages={setMessages} setInputStyle={setInputStyle}/>
                         }
                         rightButtons={
-                            <div onClick={()=>{inputRef.current = ""}}>
+                            <div onClick={()=>getAnswer()}>
                                 <IconButton aria-label="전송" ><SendIcon/></IconButton>
                             </div>
                         }

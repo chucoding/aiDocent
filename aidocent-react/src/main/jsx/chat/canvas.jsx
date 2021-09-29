@@ -38,7 +38,7 @@ const Canvas = (props) => {
 
     return (
         <div className="canvas">
-            <Card sx={{ height: '96vh', marginTop: '1vh' }}>
+            <Card sx={{ height: '96vh', marginTop: '1vh', overflow:"auto" }}>
                 <CardActionArea>
                     <CardMedia
                         component="img"

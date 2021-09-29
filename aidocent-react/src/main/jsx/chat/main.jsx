@@ -1,9 +1,13 @@
 import Canvas from './canvas';
 import Chat from './chat';
+import { Redirect } from "react-router-dom";
 
 const ChatMain = ({ location }) => {
 
-    return (
+    if(location.props === undefined) {
+        return <Redirect to="/"/>
+    } else {
+        return (
         <>
             <Canvas
                 imagePath={location.props && location.props.image_path ? location.props.image_path : ""}
@@ -12,7 +16,8 @@ const ChatMain = ({ location }) => {
             />
             <Chat />
         </>
-    );
+    	);
+    }
 };
 
 export default ChatMain;
