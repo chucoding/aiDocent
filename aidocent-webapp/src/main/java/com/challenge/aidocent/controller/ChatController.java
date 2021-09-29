@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.challenge.aidocent.service.EntriService;
 
@@ -27,9 +28,14 @@ public class ChatController {
 	@CrossOrigin("*")
 	@PostMapping(value = "/chat/message")
 	public Map message(@RequestBody Map<String, Object> data) {
-
 		logger.info("메시지");
 		return chatService.chatmessage(data);
-
+	}
+	
+	@CrossOrigin("*")
+	@PostMapping(value = "/chat/question")
+	public Map stt(MultipartFile file) {
+		logger.info("STT API로 추출된 질문 불러오기", file);
+		return null;
 	}
 }

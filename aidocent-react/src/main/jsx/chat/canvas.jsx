@@ -10,13 +10,13 @@ import SaveIcon from '@mui/icons-material/Save';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import TextField from '@mui/material/TextField';
 
-import sampleImg from '../../resources/img/snow.jpg';
-
 const Canvas = (props) => {
 
-    const image_path = "http://localhost:8080/aidocent/" + props.image_path;
+    const imagePath = "http://localhost:8080/aidocent/" + props.imagePath;
     const translate = props.translate;
     const canvasRef = useState(null);
+
+    console.log(props);
 
     const [edit, setEdit] = useState(false);
     const [text, setText] = useState("앨리스는 눈 덮인 길을 따라 불이 켜진 오두막집으로 발걸음을 향했어요.\n오두막집은 마치 앨리스가 이곳으로 올거라는 것을 미리 알고 있는듯한 느낌이에요.");
@@ -27,7 +27,7 @@ const Canvas = (props) => {
                 <CardActionArea>
                     <CardMedia
                         component="img"
-                        image={sampleImg}
+                        image={imagePath}
                         alt="Paellda difsdh"
                     />
                 </CardActionArea>

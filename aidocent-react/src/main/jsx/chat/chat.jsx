@@ -1,37 +1,20 @@
 import { useState, useEffect, useRef } from "react";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import { styled } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import SendIcon from '@mui/icons-material/Send';
-import MicOffIcon from '@mui/icons-material/MicOff';
 
 import { MessageList } from 'react-chat-elements'
 import { Input } from 'react-chat-elements'
 
 import 'react-chat-elements/dist/main.css';
-
-const ExpandMore = styled((props) => {
-    const { expand, ...other } = props;
-    return <IconButton {...other} />;
-  })(({ theme, expand }) => ({
-    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
-}));
+import AudioRecord from './audio';
 
 const Chat = () => {
     const [messages, setMessages] = useState([]);
     const inputRef = useRef(null);
+    const [inputStyle, setInputStyle] = useState(null);
 
-    const [expanded, setExpanded] = useState(false);
-
-    const handleExpandClick = () => {
-        setExpanded(!expanded);
-    };
-    
     const openChat = () => {
         const url = `http://localhost:8080/aidocent/chat/open`;
         fetch(url, { method: "POST", headers: { "Access-Control-Allow-Origin": "*" } })
@@ -56,7 +39,12 @@ const Chat = () => {
     };
 
     useEffect(openChat, []);
-    
+    /*{
+        position: 'right',
+        type: 'text',
+        text: '안녕하세요',
+        date: new Date(),
+    }*/
     return (
         <div className="chat">
             <Card sx={{height:'96vh', marginTop:'1vh'}}>
@@ -65,32 +53,21 @@ const Chat = () => {
                         className='message-list'
                         lockable={true}
                         toBottomHeight={'100%'}
-                        dataSource={[
-                            {
-                                position: 'right',
-                                type: 'text',
-                                text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit',
-                                date: new Date(),
-                            },
-                    ]} />
+                        dataSource={messages}
+                    />
                 </CardContent>
                 <CardContent>
                     <Input
                         ref={el => (inputRef.current = el)}
-                        placeholder="Type here..."
-                        multiline={true}
+                        placeholder="메시지를 입력하시오"
+                        multiline={false}
+                        inputStyle={inputStyle}
                         leftButtons={
-                            <div onClick={()=>{inputRef.current = ""}}>
-                                <IconButton aria-label="음성" >
-                                <MicOffIcon/>
-                                </IconButton>
-                            </div>
+                            <AudioRecord messages={messages} setMessages={setMessages} setInputStyle={setInputStyle}/>
                         }
                         rightButtons={
                             <div onClick={()=>{inputRef.current = ""}}>
-                                <IconButton aria-label="전송" >
-                                <SendIcon/>
-                                </IconButton>
+                                <IconButton aria-label="전송" ><SendIcon/></IconButton>
                             </div>
                         }
                     />
