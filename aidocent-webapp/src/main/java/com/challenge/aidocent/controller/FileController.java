@@ -49,9 +49,9 @@ public class FileController {
 
 		String result = entriservice.ObjectDetect(req, path);
 		JSONObject json = new JSONObject(result);
-		
+
 		JSONObject return_object = json.getJSONObject("return_object");
-		if(!return_object.isEmpty()) {
+		if (!return_object.isEmpty()) {
 			String token = "";
 			JSONArray jArray = return_object.getJSONArray("data");
 			for (int i = 0; i < jArray.length(); i++) {
