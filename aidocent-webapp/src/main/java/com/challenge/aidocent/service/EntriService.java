@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.challenge.aidocent.dao.EntriDao;
 import com.challenge.aidocent.util.CacheUtils;
-import com.google.api.services.storage.Storage.BucketAccessControls.List;
 
 @Service
 public class EntriService {
@@ -77,7 +76,9 @@ public class EntriService {
 		return map;
 	}
 
-	public Map ObjectDetect(HttpServletRequest req, MultipartFile file) throws IllegalStateException, IOException {
+	// 객체 검출
+	public Map<String, Object> ObjectDetect(HttpServletRequest req, MultipartFile file)
+			throws IllegalStateException, IOException {
 
 		EntriDao chatDao = new EntriDao();
 
@@ -96,16 +97,46 @@ public class EntriService {
 		}
 		file.transferTo(new File(path));
 
-		
 		result.put("file_name", file_name);
 		result.put("body", chatDao.ObjectDetect(path));
 		return result;
 
 	}
 
+	// 위키사전
 	public String wiki(String text) {
 		EntriDao chatDao = new EntriDao();
 		return chatDao.wiki(text);
 	}
 
+	// STT
+	public Map<String, Object> stt(HttpServletRequest req, MultipartFile file)
+			throws IllegalStateException, IOException, InterruptedException {
+		EntriDao chatDao = new EntriDao();
+		Map<String, Object> map = new HashMap<String, Object>();
+		UUID uuid = UUID.randomUUID();
+		String folder_name = req.getSession().getServletContext().getRealPath("/") + "resources" + File.separator
+				+ "stt";
+		String file_name = uuid.toString().replaceAll("-", "")
+				+ file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+		String path = folder_name + File.separator + file_name;
+
+		File Folder = new File(folder_name);
+		if (Folder.exists() == false) {
+			Folder.mkdirs();
+		}
+		file.transferTo(new File(path));
+
+		File is_file = new File(path);
+		boolean isExists;
+		while (true) {
+			Thread.sleep(1000);
+			isExists = is_file.exists();
+			if (isExists) {
+				map.put("stt", chatDao.stt(path));
+				break;
+			}
+		}
+		return map;
+	}
 }

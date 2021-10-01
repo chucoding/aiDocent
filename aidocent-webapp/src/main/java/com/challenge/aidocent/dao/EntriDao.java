@@ -185,4 +185,63 @@ public class EntriDao {
 		}
 		return result;
 	}
+
+	// stt
+	public String stt(String path_) {
+		System.out.println(path_);
+		String result = "";
+		String languageCode = "korean"; // 언어 코드
+		String audioContents = null;
+
+		Gson gson = new Gson();
+
+		Map<String, Object> request = new HashMap<>();
+		Map<String, String> argument = new HashMap<>();
+
+		try {
+			Path path = Paths.get(path_);
+			byte[] audioBytes = Files.readAllBytes(path);
+			audioContents = Base64.getEncoder().encodeToString(audioBytes);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		argument.put("language_code", languageCode);
+		argument.put("audio", audioContents);
+
+		request.put("access_key", ACCESS_KEY);
+		request.put("argument", argument);
+
+		URL url;
+		Integer responseCode = null;
+		String responBody = null;
+		try {
+			url = new URL(OPEN_API_URL + "WiseASR/Recognition");
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			con.setRequestMethod("POST");
+			con.setDoOutput(true);
+
+			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+			wr.write(gson.toJson(request).getBytes("UTF-8"));
+			wr.flush();
+			wr.close();
+
+			responseCode = con.getResponseCode();
+			InputStream is = con.getInputStream();
+			byte[] buffer = new byte[is.available()];
+			int byteRead = is.read(buffer);
+			responBody = new String(buffer);
+
+			System.out.println("[responseCode] " + responseCode);
+			System.out.println("[responBody]");
+			System.out.println(responBody);
+			result = responBody;
+
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 }

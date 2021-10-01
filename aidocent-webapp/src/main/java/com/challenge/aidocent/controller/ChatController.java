@@ -22,6 +22,7 @@ import com.challenge.aidocent.service.GoogleService;
 public class ChatController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
+	
 	@Autowired
 	EntriService chatService;
 
@@ -43,9 +44,9 @@ public class ChatController {
 
 	@CrossOrigin("*")
 	@PostMapping(value = "/chat/question")
-	public Map stt(MultipartFile file) {
+	public Map stt(HttpServletRequest req, MultipartFile file) throws Exception {
 		logger.info("STT API로 추출된 질문 불러오기", file);
-		return null;
+		return chatService.stt(req, file);
 	}
 
 	@CrossOrigin("*")
@@ -55,7 +56,6 @@ public class ChatController {
 		System.out.println(data);
 		Map<String, Object> map = new HashedMap<String, Object>();
 		map.put("file_name", googleService.TTS(req, data.get("data").toString()));
-		System.out.println(map);
 		return map;
 	}
 }
