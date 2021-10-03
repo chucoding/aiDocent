@@ -4,9 +4,10 @@ import { useHistory } from "react-router-dom";
 const Main = () => {
 
     const history = useHistory();
-
+    
     const handleUploadFile = (file) => {
 
+        console.log(file);
         if (file.type.indexOf("image") !== 0) {
             alert("이미지 파일만 가능합니다.");
             return;

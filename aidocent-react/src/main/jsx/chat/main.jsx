@@ -1,4 +1,4 @@
-import Canvas from './canvas';
+import Canvas from './canvas/main';
 import Chat from './chat';
 import { Redirect } from "react-router-dom";
 

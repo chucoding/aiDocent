@@ -14,12 +14,11 @@ const Canvas = (props) => {
 
     const imagePath = "http://localhost:8080/aidocent/" + props.imagePath;
     const translate = props.translate;
-    const canvasRef = useState(null);
     var tts_path = "http://localhost:8080/aidocent/";
     var audio = document.createElement("Audio");
     console.log(props.vision_text);
     console.log(props);
-
+    
     const [edit, setEdit] = useState(false);
     const [text, setText] = useState(props.vision_text);
     const readtts = () => {
