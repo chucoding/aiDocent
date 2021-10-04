@@ -26,13 +26,13 @@ const FileUpload = (props) => {
         }
     };
 
-    const resizeFile = (file) =>
+    const resizeFile = (file, compressFormat) =>
         new Promise((resolve) => {
             Resizer.imageFileResizer(
             file,
             300,
             300,
-            "JPEG",
+            compressFormat,
             100,
             0,
             (uri) => {
@@ -44,14 +44,15 @@ const FileUpload = (props) => {
 
   const onChange = async (event) => {
     try {
-      const file = event.target.files[0];
-      const image = await resizeFile(file);
-      props.uploadFile(image)
+      let file = event.target.files[0];
+      var format = "JPEG";
+      if(file.name.split(".")[1] === 'png') format = "PNG";
+      const imageSrc = await resizeFile(file, format);
+      props.uploadFile(file.name, imageSrc);
     } catch (err) {
       console.log(err);
     }
   };
-
 
     /* fileupload config */
     const { getRootProps, getInputProps, open } = useDropzone({

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import IconButton from '@mui/material/IconButton';
@@ -34,6 +34,8 @@ const Chat = () => {
             date:new Date()
         };
 
+        console.log(answer);
+
         setMessages([...messages, answer]);
         const url = `http://localhost:8080/aidocent/chat/message`;
         fetch(url, { method: "POST", body: JSON.stringify({ data: answer }), headers: { "Access-Control-Allow-Origin": "*", "content-type": "application/json" } })
@@ -46,11 +48,16 @@ const Chat = () => {
    };
 
     useEffect(openChat, []);
-
+    /*{
+        position: 'right',
+        type: 'text',
+        text: '안녕하세요',
+        date: new Date(),
+    }*/
     return (
         <div className="chat">
             <Card sx={{height:'96vh', marginTop:'1vh'}}>
-                <CardContent style={{backgroundColor:'aquamarine', height:'82vh'}}>
+                <CardContent style={{backgroundColor:'lightgray', height:'82vh'}}>
                     <MessageList
                         className='message-list'
                         lockable={true}

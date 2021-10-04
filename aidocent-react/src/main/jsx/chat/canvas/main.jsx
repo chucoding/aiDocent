@@ -38,11 +38,11 @@ const Canvas = (props) => {
     return (
         <div className="canvas">
             <Card sx={{ height: '96vh', marginTop: '1vh', overflow:"auto" }}>
-                <CardActionArea>
+                <CardActionArea sx={{textAlign:"center", background:"lightgray" }}>
                     <CardMedia
                         component="img"
                         image={imagePath}
-                        alt="Paellda difsdh"
+                        sx={{maxWidth:"59%", maxHeight:"70%", display:"inline-block"}}
                     />
                 </CardActionArea>
                 <CardContent>
