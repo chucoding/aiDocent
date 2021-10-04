@@ -7,12 +7,15 @@ const App = () => {
 
   const Main = lazy(() => import( './main/jsx/upload/main'));
   const Chat = lazy(() => import( './main/jsx/chat/main'));
+  const Test = lazy(() => import( './main/jsx/test'));
+
   return (
     <Router>
       <Suspense fallback={<div>Loading... </div>}>
         <Switch>
           <Route path="/" exact component={Main}/>
           <Route path="/chat" exact component={Chat}/>
+          <Route path="/test" exact component={Test}/>
         </Switch>
       </Suspense>
     </Router>

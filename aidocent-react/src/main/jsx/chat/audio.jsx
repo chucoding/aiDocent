@@ -13,8 +13,12 @@ const AudioRecord = (props) => {
   const [audioUrl, setAudioUrl] = useState();
 
   const onRecAudio = async () => {
+    var AudioContext = window.AudioContext || window.webkitAudioContext;
     // 음원정보를 담은 노드를 생성하거나 음원을 실행또는 디코딩 시키는 일을 한다
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    var audioCtx = new AudioContext({
+      latencyHint: 'interactive',
+      sampleRate: 16000,
+    });
     // 자바스크립트를 통해 음원의 진행상태에 직접접근에 사용된다.
     const analyser = audioCtx.createScriptProcessor(0, 1, 1);
 
@@ -81,7 +85,7 @@ const AudioRecord = (props) => {
   };
 
   const onSubmitAudioFile = useCallback(() => {
-    const sound = new File([audioUrl], "soundBlob.wav", { lastModified: new Date().getTime(), type: "audio/wav" });
+    const sound = new File([audioUrl], "soundBlob.wav", { lastModified: new Date().getTime() });
     let body = new FormData();
     body.append('file', sound);
 
