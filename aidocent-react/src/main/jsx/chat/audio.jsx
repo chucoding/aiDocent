@@ -16,8 +16,7 @@ const AudioRecord = (props) => {
     var AudioContext = window.AudioContext || window.webkitAudioContext;
     // 음원정보를 담은 노드를 생성하거나 음원을 실행또는 디코딩 시키는 일을 한다
     var audioCtx = new AudioContext({
-      latencyHint: 'interactive',
-      sampleRate: 16000,
+      sampleRate:16000
     });
     // 자바스크립트를 통해 음원의 진행상태에 직접접근에 사용된다.
     const analyser = audioCtx.createScriptProcessor(0, 1, 1);
@@ -32,8 +31,8 @@ const AudioRecord = (props) => {
       analyser.connect(audioCtx.destination);
     }
     // 마이크 사용 권한 획득
-    navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-      const mediaRecorder = new MediaRecorder(stream);
+    navigator.mediaDevices.getUserMedia({ audio:true, video:false }).then((stream) => {
+      const mediaRecorder = new MediaRecorder(stream, {audioBitsPerSecond:128000});
       mediaRecorder.start();
       setStream(stream);
       setMedia(mediaRecorder);
@@ -90,7 +89,7 @@ const AudioRecord = (props) => {
     body.append('file', sound);
 
     const url = `http://localhost:8080/aidocent/chat/question`;
-    fetch(url, { method: "POST", body, headers: { "Access-Control-Allow-Origin": "*" } })
+    fetch(url, { method: "POST", body, headers: { "Access-Control-Allow-Origin": "*" }, 'Content-Type': `audio/wav` })
       .then((res) => res.json())
       .then((data) => {
         props.setMessages(messages => [...messages, data.stt]);

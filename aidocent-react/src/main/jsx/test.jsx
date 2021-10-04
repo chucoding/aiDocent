@@ -34,6 +34,7 @@ const Test = () => {
     });
 
     const uploadFile = (file) => {
+        console.log(file)
         let body = new FormData();
         body.append('file', file);
 
