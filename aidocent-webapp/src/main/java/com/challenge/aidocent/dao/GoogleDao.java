@@ -11,6 +11,8 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections4.ListUtils;
+
 import com.google.cloud.texttospeech.v1.AudioConfig;
 import com.google.cloud.texttospeech.v1.AudioEncoding;
 import com.google.cloud.texttospeech.v1.SsmlVoiceGender;
@@ -53,6 +55,7 @@ public class GoogleDao {
 	}
 
 	// vision
+	@SuppressWarnings("unused")
 	public static String detectText(String path) throws IOException {
 		String result = "";
 
@@ -72,7 +75,11 @@ public class GoogleDao {
 					System.out.format("Error: %s%n", res.getError().getMessage());
 					return "";
 				}
-				result = res.getTextAnnotationsList().get(0).getDescription();
+				
+				List<EntityAnnotation> textAnnotationsList = res.getTextAnnotationsList();
+				if(!textAnnotationsList.isEmpty()) {
+					result = res.getTextAnnotationsList().get(0).getDescription();
+				}
 				System.out.println(result);
 			}
 		}

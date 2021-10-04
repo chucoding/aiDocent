@@ -83,7 +83,7 @@ public class EntriService {
 		EntriDao chatDao = new EntriDao();
 
 		Map<String, Object> result = new HashMap<String, Object>();
-
+		
 		UUID uuid = UUID.randomUUID();
 		String folder_name = req.getSession().getServletContext().getRealPath("/") + "resources" + File.separator
 				+ "img";
