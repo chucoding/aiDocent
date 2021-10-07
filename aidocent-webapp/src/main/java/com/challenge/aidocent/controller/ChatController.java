@@ -22,7 +22,7 @@ import com.challenge.aidocent.service.GoogleService;
 public class ChatController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
-	
+
 	@Autowired
 	EntriService chatService;
 
@@ -56,6 +56,15 @@ public class ChatController {
 		System.out.println(data);
 		Map<String, Object> map = new HashedMap<String, Object>();
 		map.put("file_name", googleService.TTS(req, data.get("data").toString()));
+		return map;
+	}
+
+	@CrossOrigin("*")
+	@PostMapping(value = "/chat/QAnal")
+	public Map QAnal(HttpServletRequest req, @RequestBody Map<String, Object> data) {
+		logger.info("WiseQAnal API");
+		System.out.println(data);
+		Map<String, Object> map = new HashedMap<String, Object>();
 		return map;
 	}
 }

@@ -4,12 +4,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections4.MapUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -83,7 +86,7 @@ public class EntriService {
 		EntriDao chatDao = new EntriDao();
 
 		Map<String, Object> result = new HashMap<String, Object>();
-		
+
 		UUID uuid = UUID.randomUUID();
 		String folder_name = req.getSession().getServletContext().getRealPath("/") + "resources" + File.separator
 				+ "img";
@@ -104,9 +107,20 @@ public class EntriService {
 	}
 
 	// 위키사전
-	public String wiki(String text) {
+	public Map<String, Object> wiki(String text) {
 		EntriDao chatDao = new EntriDao();
-		return chatDao.wiki(text);
+		Map<String, Object> result = new HashMap<String, Object>();
+		String body = chatDao.wiki(text);
+
+		JSONObject json = new JSONObject(body);
+		JSONObject WiKiInfo = json.getJSONObject("return_object").getJSONObject("WiKiInfo");
+		JSONArray jArray = WiKiInfo.getJSONArray("AnswerInfo");
+
+		for (int i = 0; i < jArray.length(); i++) {
+			result.put(Integer.toString(i + 1), jArray.getJSONObject(i).getString("answer"));
+		}
+
+		return result;
 	}
 
 	// STT
@@ -138,5 +152,11 @@ public class EntriService {
 			}
 		}
 		return map;
+	}
+
+	// WiseQAnal
+	public String WiseQAnal(String text) {
+		EntriDao chatDao = new EntriDao();
+		return chatDao.WiseQAnal(text);
 	}
 }

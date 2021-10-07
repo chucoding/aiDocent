@@ -123,10 +123,8 @@ public class EntriDao {
 			result = responBody;
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
-			result = "";
 		} catch (IOException e) {
 			e.printStackTrace();
-			result = "";
 		}
 		return result;
 	}
@@ -178,10 +176,8 @@ public class EntriDao {
 			result = responBody;
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
-			result = "";
 		} catch (IOException e) {
 			e.printStackTrace();
-			result = "";
 		}
 		return result;
 	}
@@ -244,4 +240,51 @@ public class EntriDao {
 		}
 		return result;
 	}
+
+	// stt
+	public String WiseQAnal(String question) {
+		String result = "";
+		Gson gson = new Gson();
+
+		Map<String, Object> request = new HashMap<>();
+		Map<String, String> argument = new HashMap<>();
+
+		argument.put("text", question);
+
+		request.put("access_key", ACCESS_KEY);
+		request.put("argument", argument);
+
+		URL url;
+		Integer responseCode = null;
+		String responBody = null;
+		try {
+			url = new URL(OPEN_API_URL + "WiseQAnal");
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			con.setRequestMethod("POST");
+			con.setDoOutput(true);
+
+			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+			wr.write(gson.toJson(request).getBytes("UTF-8"));
+			wr.flush();
+			wr.close();
+
+			responseCode = con.getResponseCode();
+			InputStream is = con.getInputStream();
+			byte[] buffer = new byte[is.available()];
+			int byteRead = is.read(buffer);
+			responBody = new String(buffer);
+
+			System.out.println("[responseCode] " + responseCode);
+			System.out.println("[responBody]");
+			System.out.println(responBody);
+			result = responBody;
+
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
 }
