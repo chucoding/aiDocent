@@ -25,7 +25,7 @@ import com.challenge.aidocent.util.CacheUtils;
 import com.challenge.aidocent.util.Dictionary;
 
 @Service
-public class EntriService {
+public class EtriService {
 
 	@Autowired
 	Dictionary dictionary;

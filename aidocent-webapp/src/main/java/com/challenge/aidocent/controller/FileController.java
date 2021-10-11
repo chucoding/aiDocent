@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.challenge.aidocent.service.EntriService;
+import com.challenge.aidocent.service.EtriService;
 import com.challenge.aidocent.service.GoogleService;
 
 @RestController
@@ -23,7 +23,7 @@ public class FileController {
 
 	private static final Logger logger = LoggerFactory.getLogger(FileController.class);
 	@Autowired
-	EntriService entriservice;
+	EtriService entriservice;
 	@Autowired
 	GoogleService googleservice;
 

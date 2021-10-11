@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.challenge.aidocent.service.EntriService;
+import com.challenge.aidocent.service.ChatService;
+import com.challenge.aidocent.service.EtriService;
 import com.challenge.aidocent.service.GoogleService;
 
 @RestController
@@ -24,15 +25,16 @@ public class ChatController {
 	private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
 
 	@Autowired
-	EntriService chatService;
+	ChatService chatService;
+	EtriService etriService;
 
 	@Autowired
 	GoogleService googleService;
 
 	@CrossOrigin("*")
 	@PostMapping(value = "/chat/open")
-	public Map open() {
-		return chatService.chatopen();
+	public Map open(HttpServletRequest req, @RequestBody Map<String, Object> data) {
+		return chatService.chatopen(data);
 	}
 
 	@CrossOrigin("*")
@@ -41,9 +43,9 @@ public class ChatController {
 		logger.info("메시지");
 		Map map = MapUtils.getMap(data, "data");
 		if (map.get("text").toString().toLowerCase().contentEquals("quiz") || map.get("text").toString().contentEquals("퀴즈")) {
-			return chatService.quiz(data);
+			return etriService.quiz(data);
 		} else {
-			return chatService.chatmessage(data);
+			return etriService.chatmessage(data);
 		}
 	}
 
@@ -51,7 +53,7 @@ public class ChatController {
 	@PostMapping(value = "/chat/question")
 	public Map stt(HttpServletRequest req, MultipartFile file) throws Exception {
 		logger.info("STT API로 추출된 질문 불러오기", file);
-		return chatService.stt(req, file);
+		return etriService.stt(req, file);
 	}
 
 	@CrossOrigin("*")
