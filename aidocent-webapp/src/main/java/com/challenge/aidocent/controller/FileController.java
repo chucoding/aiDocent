@@ -37,7 +37,7 @@ public class FileController {
 
 		JSONObject return_object = json.getJSONObject("return_object");
 		if (!return_object.isEmpty()) {
-			String token = "";
+			/*String token = "";
 			JSONArray jArray = return_object.getJSONArray("data");
 			for (int i = 0; i < jArray.length(); i++) {
 				JSONObject str = jArray.getJSONObject(i);
@@ -54,7 +54,10 @@ public class FileController {
 				body = body.replaceAll(token.split(",")[count++], str);
 			}
 			json = new JSONObject(body);
-			body = json.getJSONObject("return_object").getJSONArray("data").toString();
+			body = json.getJSONObject("return_object").getJSONArray("data").toString();*/
+			
+			// 위 아래 둘중 하나로
+			body = return_object.toString();
 		} else {
 			body = "";
 		}

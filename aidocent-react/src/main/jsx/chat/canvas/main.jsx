@@ -16,7 +16,7 @@ const Canvas = (props) => {
     const translate = props.translate;
     var tts_path = "http://localhost:8080/aidocent/";
     var audio = document.createElement("Audio");
-    console.log(props.vision_text);
+    console.log(translate);
     console.log(props);
     
     const [edit, setEdit] = useState(false);

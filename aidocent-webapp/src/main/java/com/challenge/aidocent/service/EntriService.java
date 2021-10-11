@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,13 +17,18 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.challenge.aidocent.dao.EntriDao;
 import com.challenge.aidocent.util.CacheUtils;
+import com.challenge.aidocent.util.Dictionary;
 
 @Service
 public class EntriService {
+
+	@Autowired
+	Dictionary dictionary;
 
 	@Autowired
 	CacheUtils cache;
@@ -80,18 +86,15 @@ public class EntriService {
 	}
 
 	// 객체 검출
-	public Map<String, Object> ObjectDetect(HttpServletRequest req, MultipartFile file)
-			throws IllegalStateException, IOException {
+	public Map<String, Object> ObjectDetect(HttpServletRequest req, MultipartFile file) throws IllegalStateException, IOException {
 
 		EntriDao chatDao = new EntriDao();
 
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		UUID uuid = UUID.randomUUID();
-		String folder_name = req.getSession().getServletContext().getRealPath("/") + "resources" + File.separator
-				+ "img";
-		String file_name = uuid.toString().replaceAll("-", "")
-				+ file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+		String folder_name = req.getSession().getServletContext().getRealPath("/") + "resources" + File.separator + "img";
+		String file_name = uuid.toString().replaceAll("-", "") + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
 		String path = folder_name + File.separator + file_name;
 
 		File Folder = new File(folder_name);
@@ -124,15 +127,12 @@ public class EntriService {
 	}
 
 	// STT
-	public Map<String, Object> stt(HttpServletRequest req, MultipartFile file)
-			throws IllegalStateException, IOException, InterruptedException {
+	public Map<String, Object> stt(HttpServletRequest req, MultipartFile file) throws IllegalStateException, IOException, InterruptedException {
 		EntriDao chatDao = new EntriDao();
 		Map<String, Object> map = new HashMap<String, Object>();
 		UUID uuid = UUID.randomUUID();
-		String folder_name = req.getSession().getServletContext().getRealPath("/") + "resources" + File.separator
-				+ "stt";
-		String file_name = uuid.toString().replaceAll("-", "")
-				+ file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+		String folder_name = req.getSession().getServletContext().getRealPath("/") + "resources" + File.separator + "stt";
+		String file_name = uuid.toString().replaceAll("-", "") + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
 		String path = folder_name + File.separator + file_name;
 
 		File Folder = new File(folder_name);
@@ -158,5 +158,89 @@ public class EntriService {
 	public String WiseQAnal(String text) {
 		EntriDao chatDao = new EntriDao();
 		return chatDao.WiseQAnal(text);
+	}
+
+	public Map<String, Object> quiz(Map<String, Object> data) {
+		String[] quiz_type = { /*"search", "number",*/ "word", "wiki" };
+		Random rand = new Random();
+		Map<?, ?> is_obj = MapUtils.getMap(data, "data");
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> chatbotInfo = new HashMap<String, Object>();
+		chatbotInfo.put("id", "user");
+
+		// 검출된 객채 없으면 리턴
+		if (is_obj.get("translate").toString().isEmpty()) {
+			map.put("id", "chatbot");
+			map.put("text", "검출된 객체가 없어 퀴즈를 진행할 수 없습니다.");
+			map.put("createdAt", new Date());
+			map.put("user", chatbotInfo);
+			map.put("quiz_type", "Null");
+			return map;
+		}
+		JSONObject body = new JSONObject(is_obj.get("translate").toString());
+		JSONArray arr = body.getJSONArray("data");
+		int select = rand.nextInt(arr.length());
+		String answer = "";
+		System.out.println(arr.getJSONObject(select).get("class").toString());
+		// 검출된 객채 있으면 문제 만들기
+		switch (quiz_type[rand.nextInt(2)]) {
+		/*case "search":
+			// 답변(좌표 리스트)과 질문(총 개수)
+			map.put("id", "chatbot");
+			map.put("text", "을(를) 이미지에서 찾아 클릭해주세요.");
+			map.put("createdAt", new Date());
+			map.put("user", chatbotInfo);
+			map.put("quiz_type", "search");
+			break;
+		case "number":
+			// 답변과 질문(총 개수)
+			map.put("id", "chatbot");
+			map.put("text", "인가요?");
+			map.put("createdAt", new Date());
+			map.put("user", chatbotInfo);
+			map.put("quiz_type", "number");
+			break;*/
+		case "word":
+			// 답변과 질문
+			for (int i = 0; i < dictionary.getEc_noun().length; i++) {
+				if (dictionary.getEc_noun()[i].equals(arr.getJSONObject(select).get("class").toString())) {
+					answer = dictionary.getKo_noun()[i];
+					break;
+				}
+			}
+			map.put("id", "chatbot");
+			map.put("text", arr.getJSONObject(select).get("class").toString() + "의 한글 뜻이 어떻게 되나요?");
+			map.put("answer", answer);
+			map.put("createdAt", new Date());
+			map.put("user", chatbotInfo);
+			map.put("quiz_type", "word");
+			break;
+		case "wiki":
+			// 답변과 위키 내용
+			System.out.println("wiki");
+			for (int i = 0; i < dictionary.getEc_noun().length; i++) {
+				System.out.println(dictionary.getEc_noun()[i]);
+				if (dictionary.getEc_noun()[i].equals(arr.getJSONObject(select).get("class").toString())) {
+					answer = dictionary.getKo_noun()[i];
+
+					break;
+				}
+			}
+
+			String context = "";
+			Map<String, Object> result = wiki(answer);
+			for (int i = 0; i < result.size(); i++) {
+				context += (i + 1 + "번째 설명 : " + result.get(Integer.toString(i + 1)) + "<br/>");
+			}
+			map.put("id", "chatbot");
+			map.put("text", "다음 설명으로 알맞은 단어를 입력하세요. <br/>" + context);
+			map.put("answer", answer);
+			map.put("createdAt", new Date());
+			map.put("user", chatbotInfo);
+			map.put("quiz_type", "wiki");
+			break;
+		}
+
+		return map;
 	}
 }

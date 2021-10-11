@@ -4,31 +4,25 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.collections4.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.challenge.aidocent.service.EntriService;
 import com.challenge.aidocent.service.GoogleService;
-import com.google.api.client.util.Value;
 
 @RestController
 public class ChatController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
 
-	@Value("${dictionary['dic.person']}")
-	private String person;
-	
 	@Autowired
 	EntriService chatService;
 
@@ -38,15 +32,19 @@ public class ChatController {
 	@CrossOrigin("*")
 	@PostMapping(value = "/chat/open")
 	public Map open() {
-		System.out.println(person);
 		return chatService.chatopen();
 	}
 
 	@CrossOrigin("*")
 	@PostMapping(value = "/chat/message")
-	public Map message(@RequestBody Map<String, Object> data) {
+	public Map message(HttpServletRequest req, @RequestBody Map<String, Object> data) {
 		logger.info("메시지");
-		return chatService.chatmessage(data);
+		Map map = MapUtils.getMap(data, "data");
+		if (map.get("text").toString().toLowerCase().contentEquals("quiz") || map.get("text").toString().contentEquals("퀴즈")) {
+			return chatService.quiz(data);
+		} else {
+			return chatService.chatmessage(data);
+		}
 	}
 
 	@CrossOrigin("*")
@@ -74,4 +72,5 @@ public class ChatController {
 		Map<String, Object> map = new HashedMap<String, Object>();
 		return map;
 	}
+
 }
