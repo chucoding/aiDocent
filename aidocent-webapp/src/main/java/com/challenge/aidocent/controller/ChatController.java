@@ -8,6 +8,8 @@ import org.apache.commons.collections4.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,12 +19,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.challenge.aidocent.service.EntriService;
 import com.challenge.aidocent.service.GoogleService;
+import com.google.api.client.util.Value;
 
 @RestController
 public class ChatController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
 
+	@Value("${dictionary['dic.person']}")
+	private String person;
+	
 	@Autowired
 	EntriService chatService;
 
@@ -32,6 +38,7 @@ public class ChatController {
 	@CrossOrigin("*")
 	@PostMapping(value = "/chat/open")
 	public Map open() {
+		System.out.println(person);
 		return chatService.chatopen();
 	}
 
