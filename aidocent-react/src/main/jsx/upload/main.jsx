@@ -1,9 +1,13 @@
+import { useState } from 'react';
 import Upload from './upload';
 import { useHistory } from "react-router-dom";
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const Main = () => {
 
     const history = useHistory();
+    const [open, setOpen] = useState(false);
     
     const convertBase64URItoFile = (filename, imageSrc) => {
         var bstr = atob(imageSrc.split(",")[1], 'base64');
@@ -21,12 +25,11 @@ const Main = () => {
         body.append('file', file);
 
         const url = `http://localhost:8080/aidocent/files`;
-
+        setOpen(true);
         fetch(url, { method: "POST", body, headers: { "Access-Control-Allow-Origin": "*" } })
             .then((response) => response.json())
             .then(data => {
-                console.log(data);
-                
+                setOpen(false);
                 history.push({
                     pathname: "/chat",
                     props: { image_path: data.path, translate: data.translate, vision_text: data.vision_text }
@@ -44,6 +47,12 @@ const Main = () => {
                 <h1 style={{ color: 'pink' }}>이미지를 업로드 해주세요.</h1>
                 <Upload uploadFile={handleUploadFile} />
             </div>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={open}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
         </>
     );
 };
