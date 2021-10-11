@@ -6,11 +6,15 @@ import SendIcon from '@mui/icons-material/Send';
 
 import { MessageList } from 'react-chat-elements'
 import { Input } from 'react-chat-elements'
+import Vocal from '@untemps/react-vocal'
 
 import 'react-chat-elements/dist/main.css';
 import AudioRecord from './audio';
 
 const Chat = (props) => {
+    const [question, setQuestion] = useState("");
+    const translate = props.translate;
+    const inputRef = useRef();
     const [messages, setMessages] = useState([
         {
             position:'left',
@@ -19,10 +23,16 @@ const Chat = (props) => {
             date:new Date()
         }
     ]);
-    const [inputStyle, setInputStyle] = useState(null);
-    const [question, setQuestion] = useState("");
-    const translate = props.translate;
-    const inputRef = useRef();
+
+	const _onVocalStart = () => {
+		inputRef.current.clear();
+    }
+
+	const _onVocalResult = (result) => {
+        console.log(result);
+        console.log(inputRef.current);
+        setQuestion(result);
+	}
 
     const openChat = () => {
 
@@ -92,7 +102,7 @@ const Chat = (props) => {
                     <Input
                         placeholder="메시지를 입력하시오"
                         multiline={false}
-                        inputStyle={inputStyle}
+                        defaultValue={question}
                         onChange={(e) => setQuestion(e.target.value)}
                         ref={el => (inputRef.current = el)}
                         onKeyDown={e => {
@@ -104,7 +114,12 @@ const Chat = (props) => {
                             }
                         }}
                         leftButtons={
-                            <AudioRecord messages={messages} setMessages={setMessages} setInputStyle={setInputStyle} />
+                            //<AudioRecord messages={messages} setMessages={setMessages} setInputStyle={setInputStyle} />
+                            <Vocal
+                                onStart={_onVocalStart}
+                                onResult={_onVocalResult}
+                                lang="ko-KR"
+                            />
                         }
                         rightButtons={
                             <div onClick={() => {
