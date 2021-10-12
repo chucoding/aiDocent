@@ -22,7 +22,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
 
-public class EntriDao {
+public class EtriDao {
 
 	private static final String OPEN_API_URL = "http://aiopen.etri.re.kr:8000/";
 	private static final String ACCESS_KEY = "417ac904-4b08-4ba6-9f5e-ea214b0994ad";
@@ -241,7 +241,7 @@ public class EntriDao {
 		return result;
 	}
 
-	// stt
+	// 질문분석
 	public String WiseQAnal(String question) {
 		String result = "";
 		Gson gson = new Gson();
@@ -285,6 +285,27 @@ public class EntriDao {
 			e.printStackTrace();
 		}
 		return result;
+	}
+	
+	//구문 분석
+	public Map wiseNLU_spoken(String text) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		Map<String, String> argument = new HashMap<String, String>();
+
+		argument.put("analysis_code", "morp");
+		argument.put("text", text);
+
+		params.put("access_key", ACCESS_KEY);
+		params.put("argument", argument);
+
+		HttpHeaders headers = new HttpHeaders();
+
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<Map> entity = new HttpEntity<Map>(params, headers);
+		RestTemplate rt = new RestTemplate();
+		Map resp = rt.postForObject(OPEN_API_URL + "WiseNLU_spoken", entity, Map.class);
+
+		return resp;
 	}
 
 }

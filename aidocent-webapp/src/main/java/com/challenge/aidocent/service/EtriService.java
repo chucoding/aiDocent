@@ -20,7 +20,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.challenge.aidocent.dao.EntriDao;
+import com.challenge.aidocent.dao.EtriDao;
 import com.challenge.aidocent.util.CacheUtils;
 import com.challenge.aidocent.util.Dictionary;
 
@@ -34,7 +34,7 @@ public class EtriService {
 	CacheUtils cache;
 
 	public Map chatopen() {
-		EntriDao chatDao = new EntriDao();
+		EtriDao chatDao = new EtriDao();
 		Map resp = chatDao.chatopen();
 		Map return_object = MapUtils.getMap(resp, "return_object");
 		String uuid = MapUtils.getString(return_object, "uuid");
@@ -44,7 +44,7 @@ public class EtriService {
 	}
 
 	public Map chatmessage(Map<String, Object> data) {
-		EntriDao chatDao = new EntriDao();
+		EtriDao chatDao = new EtriDao();
 		Map map = MapUtils.getMap(data, "data");
 
 		String uuid = (String) cache.get("uuid");
@@ -88,7 +88,7 @@ public class EtriService {
 	// 객체 검출
 	public Map<String, Object> ObjectDetect(HttpServletRequest req, MultipartFile file) throws IllegalStateException, IOException {
 
-		EntriDao chatDao = new EntriDao();
+		EtriDao chatDao = new EtriDao();
 
 		Map<String, Object> result = new HashMap<String, Object>();
 
@@ -111,7 +111,7 @@ public class EtriService {
 
 	// 위키사전
 	public Map<String, Object> wiki(String text) {
-		EntriDao chatDao = new EntriDao();
+		EtriDao chatDao = new EtriDao();
 		Map<String, Object> result = new HashMap<String, Object>();
 		String body = chatDao.wiki(text);
 
@@ -128,7 +128,7 @@ public class EtriService {
 
 	// STT
 	public Map<String, Object> stt(HttpServletRequest req, MultipartFile file) throws IllegalStateException, IOException, InterruptedException {
-		EntriDao chatDao = new EntriDao();
+		EtriDao chatDao = new EtriDao();
 		Map<String, Object> map = new HashMap<String, Object>();
 		UUID uuid = UUID.randomUUID();
 		String folder_name = req.getSession().getServletContext().getRealPath("/") + "resources" + File.separator + "stt";
@@ -156,7 +156,7 @@ public class EtriService {
 
 	// WiseQAnal
 	public String WiseQAnal(String text) {
-		EntriDao chatDao = new EntriDao();
+		EtriDao chatDao = new EtriDao();
 		return chatDao.WiseQAnal(text);
 	}
 

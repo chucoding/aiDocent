@@ -1,5 +1,6 @@
 package com.challenge.aidocent.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +28,8 @@ public class ChatController {
 
 	@Autowired
 	ChatService chatService;
+	
+	@Autowired
 	EtriService etriService;
 
 	@Autowired
@@ -37,9 +41,20 @@ public class ChatController {
 		return chatService.chatopen(data);
 	}
 
+	@SuppressWarnings("unchecked")
 	@CrossOrigin("*")
-	@PostMapping(value = "/chat/message")
-	public Map message(HttpServletRequest req, @RequestBody Map<String, Object> data) {
+	@PostMapping(value = "/chat/{menu}")
+	public Map<String, Object> message(HttpServletRequest req, @RequestBody Map<String, Object> data, @PathVariable String menu) {	
+		Map<String, Object> map = new HashMap<String, Object>();
+		if("quiz".equals(menu)) map = etriService.quiz(data);
+		else if("dialog".equals(menu)) map = chatService.chatmessage(data, req);
+		return map;
+	}
+	
+	/*
+	@CrossOrigin("*")
+	@PostMapping(value = "/chat/quiz")
+	public Map quiz(HttpServletRequest req, @RequestBody Map<String, Object> data) {
 		logger.info("메시지");
 		Map map = MapUtils.getMap(data, "data");
 		if (map.get("text").toString().toLowerCase().contentEquals("quiz") || map.get("text").toString().contentEquals("퀴즈")) {
@@ -47,7 +62,7 @@ public class ChatController {
 		} else {
 			return etriService.chatmessage(data);
 		}
-	}
+	}*/
 
 	@CrossOrigin("*")
 	@PostMapping(value = "/chat/question")
@@ -66,13 +81,13 @@ public class ChatController {
 		return map;
 	}
 
-	@CrossOrigin("*")
-	@PostMapping(value = "/chat/QAnal")
-	public Map QAnal(HttpServletRequest req, @RequestBody Map<String, Object> data) {
-		logger.info("WiseQAnal API");
-		System.out.println(data);
-		Map<String, Object> map = new HashedMap<String, Object>();
-		return map;
-	}
+	/*
+	 * @CrossOrigin("*")
+	 * 
+	 * @PostMapping(value = "/chat/QAnal") public Map QAnal(HttpServletRequest
+	 * req, @RequestBody Map<String, Object> data) { logger.info("WiseQAnal API");
+	 * System.out.println(data); Map<String, Object> map = new HashedMap<String,
+	 * Object>(); return map; }
+	 */
 
 }

@@ -15,6 +15,7 @@ const Chat = (props) => {
     const [question, setQuestion] = useState("");
     const translate = props.translate;
     const inputRef = useRef();
+    const [menu, setMenu] = useState("");
     const [messages, setMessages] = useState([
         {
             position:'left',
@@ -49,6 +50,7 @@ const Chat = (props) => {
         fetch(url, { method: "POST", body: JSON.stringify({ data: answer }), headers: { "Access-Control-Allow-Origin": "*", "content-type": "application/json" } })
             .then((res) => res.json())
             .then((data) => {
+                setMenu(data.menu);
                 setMessages(messages => [...messages, data]);
             }).catch(() => {
                 console.log("에러발생");
@@ -62,12 +64,13 @@ const Chat = (props) => {
             text: question,
             translate: translate,
             date: new Date()
+            
         };
 
         setMessages([...messages, answer]);
         setQuestion("");
 
-        const url = `http://localhost:8080/aidocent/chat/message`;
+        const url = `http://localhost:8080/aidocent/chat/${menu}`;
         fetch(url, { method: "POST", body: JSON.stringify({ data: answer }), headers: { "Access-Control-Allow-Origin": "*", "content-type": "application/json" } })
             .then((res) => res.json())
             .then((data) => {
@@ -86,7 +89,7 @@ const Chat = (props) => {
                 console.log("에러발생");
             });
     };
-
+    
     return (
         <div className="chat">
             <Card sx={{ height: '96vh', marginTop: '1vh' }}>
