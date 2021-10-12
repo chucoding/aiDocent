@@ -26,6 +26,7 @@ public class ChatController {
 
 	@Autowired
 	ChatService chatService;
+	@Autowired
 	EtriService etriService;
 
 	@Autowired
