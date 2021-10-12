@@ -161,7 +161,7 @@ public class EtriService {
 	}
 
 	public Map<String, Object> quiz(Map<String, Object> data) {
-		String[] quiz_type = { /*"search", "number",*/ "word", "wiki" };
+		String[] quiz_type = { "search", "number", "word"/*, "wiki"*/ };
 		Random rand = new Random();
 		Map<?, ?> is_obj = MapUtils.getMap(data, "data");
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -180,57 +180,95 @@ public class EtriService {
 		JSONObject body = new JSONObject(is_obj.get("translate").toString());
 		JSONArray arr = body.getJSONArray("data");
 		int select = rand.nextInt(arr.length());
+		String select_text = arr.getJSONObject(select).get("class").toString();
 		String answer = "";
-		System.out.println(arr.getJSONObject(select).get("class").toString());
+
 		// 검출된 객채 있으면 문제 만들기
-		switch (quiz_type[rand.nextInt(2)]) {
-		/*case "search":
+		switch (quiz_type[rand.nextInt(3)]) {
+
+		case "search":
 			// 답변(좌표 리스트)과 질문(총 개수)
+			JSONArray list = new JSONArray();
+
+			for (int i = 0; i < arr.length(); i++) {
+				if (select_text.equals(arr.getJSONObject(i).get("class").toString())) {
+					list.put(arr.getJSONObject(i));
+				}
+			}
+			for (int i = 0; i < dictionary.getEc_noun().length; i++) {
+				if (dictionary.getEc_noun()[i].equals(select_text)) {
+					answer = dictionary.getKo_noun()[i];
+					break;
+				}
+			}
+
 			map.put("id", "chatbot");
-			map.put("text", "을(를) 이미지에서 찾아 클릭해주세요.");
+			map.put("text", answer + "을(를) 이미지에서 찾아 클릭해주세요.");
+			map.put("answer", list);
 			map.put("createdAt", new Date());
 			map.put("user", chatbotInfo);
 			map.put("quiz_type", "search");
 			break;
+
 		case "number":
 			// 답변과 질문(총 개수)
+			int total = 0;
+			String str = "";
+
+			for (int i = 0; i < arr.length(); i++) {
+				if (select_text.equals(arr.getJSONObject(i).get("class").toString())) {
+					total += 1;
+				}
+			}
+			for (int i = 0; i < dictionary.getEc_noun().length; i++) {
+				if (dictionary.getEc_noun()[i].equals(select_text)) {
+					str = dictionary.getKo_noun()[i] + "는(은) 몇 " + dictionary.getMeasure()[i] + " 인가요?";
+					break;
+				}
+			}
 			map.put("id", "chatbot");
-			map.put("text", "인가요?");
+			map.put("text", str);
+			map.put("answer", total);
 			map.put("createdAt", new Date());
 			map.put("user", chatbotInfo);
 			map.put("quiz_type", "number");
-			break;*/
+			break;
+
 		case "word":
 			// 답변과 질문
 			for (int i = 0; i < dictionary.getEc_noun().length; i++) {
-				if (dictionary.getEc_noun()[i].equals(arr.getJSONObject(select).get("class").toString())) {
+				if (dictionary.getEc_noun()[i].equals(select_text)) {
 					answer = dictionary.getKo_noun()[i];
 					break;
 				}
 			}
 			map.put("id", "chatbot");
-			map.put("text", arr.getJSONObject(select).get("class").toString() + "의 한글 뜻이 어떻게 되나요?");
+			map.put("text", select_text + "의 한글 뜻이 어떻게 되나요?");
 			map.put("answer", answer);
 			map.put("createdAt", new Date());
 			map.put("user", chatbotInfo);
 			map.put("quiz_type", "word");
 			break;
-		case "wiki":
+
+		/*case "wiki":
 			// 답변과 위키 내용
 			System.out.println("wiki");
 			for (int i = 0; i < dictionary.getEc_noun().length; i++) {
 				System.out.println(dictionary.getEc_noun()[i]);
-				if (dictionary.getEc_noun()[i].equals(arr.getJSONObject(select).get("class").toString())) {
+				if (dictionary.getEc_noun()[i].equals(select_text)) {
 					answer = dictionary.getKo_noun()[i];
-
+		
 					break;
 				}
 			}
-
+		
 			String context = "";
 			Map<String, Object> result = wiki(answer);
 			for (int i = 0; i < result.size(); i++) {
-				context += (i + 1 + "번째 설명 : " + result.get(Integer.toString(i + 1)) + "<br/>");
+				context += (i + 1 + "번째 설명 : " + result.get(Integer.toString(i + 1)));
+				if (i < result.size()) {
+					context += "<br/>";
+				}
 			}
 			map.put("id", "chatbot");
 			map.put("text", "다음 설명으로 알맞은 단어를 입력하세요. <br/>" + context);
@@ -238,7 +276,7 @@ public class EtriService {
 			map.put("createdAt", new Date());
 			map.put("user", chatbotInfo);
 			map.put("quiz_type", "wiki");
-			break;
+			break;*/
 		}
 
 		return map;
