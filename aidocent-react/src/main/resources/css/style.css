@@ -41,6 +41,10 @@ html {
     width: 200px;
 }
 
+.message-list .rce-mlist {
+    max-height: 82vh;
+}
+
 .message-list .rce-mlist .rce-container-mbox {
     min-width: 0;
 }
@@ -50,4 +54,3 @@ html {
     float: left;
     margin-left: 1vh;
 }
-
