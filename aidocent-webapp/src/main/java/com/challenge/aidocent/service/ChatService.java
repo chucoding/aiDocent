@@ -1,13 +1,9 @@
 package com.challenge.aidocent.service;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,7 +23,7 @@ public class ChatService {
 	Dictionary dictionary;
 
 	private static final GoogleDao googleDao = new GoogleDao();
-	
+
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> chatopen(Map<String, Object> data) {
 
@@ -69,58 +65,58 @@ public class ChatService {
 		String[] str = text[0].toString().split(",");
 		String[] is_str = new String[str.length];
 		String result = "";
-		
+
+		// 사용자가 입력한 단어 영어로 변역
+		for (int j = 0; j < str.length; j++) {
+			for (int i = 0; i < dictionary.getKo_noun().length; i++) {
+				if (dictionary.getKo_noun()[i].equals(str[j])) {
+					is_str[j] = dictionary.getEc_noun()[i];
+					break;
+				} else {
+					is_str[j] = "";
+				}
+			}
+		}
+		JSONArray jArray = new JSONObject(datamap.get("translate").toString()).getJSONArray("data");
+		String temp = "";
+		// 사용자가 입력한 단어와 객체검출해서 나온 데이터 비교
+		for (int i = 0; i < is_str.length; i++) {
+			for (int j = 0; j < jArray.length(); j++) {
+				if (is_str[i].equals(jArray.getJSONObject(j).get("class").toString())) {
+					temp = str[i] + "는(은) 있습니다.";
+					break;
+				} /*else {
+					temp = str[i] + "는(은) 없습니다.";
+					}*/
+			}
+			is_str[i] = temp;
+		}
+
 		if ((boolean) text[1]) {
 			String body;
 			JSONObject json;
 			JSONObject WiKiInfo;
-			JSONArray jArray;
-			for (int i = 0; i < str.length; i++) {
-				body = chatDao.wiki(str[i]);
 
-				json = new JSONObject(body);
-				WiKiInfo = json.getJSONObject("return_object").getJSONObject("WiKiInfo");
-				jArray = WiKiInfo.getJSONArray("AnswerInfo");
-				if (jArray.length() == 0) {
-					is_str[i] = str[i] + "의 위키백과내용이 없습니다.";
-				} else {
+			for (int i = 0; i < str.length; i++) {
+				if (!is_str[i].isEmpty()) {
+					body = chatDao.wiki(str[i]);
+
+					json = new JSONObject(body);
+					WiKiInfo = json.getJSONObject("return_object").getJSONObject("WiKiInfo");
+					jArray = WiKiInfo.getJSONArray("AnswerInfo");
+					/*if (jArray.length() == 0) {
+						is_str[i] = str[i] + "의 위키백과내용이 없습니다.";
+					} else {*/
 					for (int j = 0; j < jArray.length(); j++) {
 						is_str[i] = str[i] + "의 위키백과 내용 : " + jArray.getJSONObject(j).getString("answer");
 					}
+					/*	}*/
 				}
-			}
-		} else {
-			// 객체 검색
-			JSONArray arr = new JSONObject(datamap.get("translate").toString()).getJSONArray("data");
-
-			// 사용자가 입력한 단어 영어로 변역
-			for (int j = 0; j < str.length; j++) {
-				for (int i = 0; i < dictionary.getKo_noun().length; i++) {
-					if (dictionary.getKo_noun()[i].equals(str[j])) {
-						is_str[j] = dictionary.getEc_noun()[i];
-						break;
-					} else {
-						is_str[j] = "";
-					}
-				}
-			}
-			String temp = "";
-			// 사용자가 입력한 단어와 객체검출해서 나온 데이터 비교
-			for (int i = 0; i < is_str.length; i++) {
-				for (int j = 0; j < arr.length(); j++) {
-					if (is_str[i].equals(arr.getJSONObject(j).get("class").toString())) {
-						temp = str[i] + "는(은) 있습니다.";
-						break;
-					} else {
-						temp = str[i] + "는(은) 없습니다.";
-					}
-				}
-				is_str[i] = temp;
 			}
 		}
 
 		for (String object : is_str) {
-			if (!object.contains("화면") && !object.contains("이미지") && !object.contains("그림")) {
+			if (!object.isEmpty() && (!object.contains("화면") && !object.contains("이미지") && !object.contains("그림"))) {
 				result += object + "<br/>";
 			}
 		}
