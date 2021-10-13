@@ -10,18 +10,20 @@ import Vocal from '@untemps/react-vocal'
 
 import 'react-chat-elements/dist/main.css';
 import AudioRecord from './audio';
+import useCoordinate from "./canvas/coordinate";
 
 const Chat = (props) => {
     const [question, setQuestion] = useState("");
-    const translate = props.translate;
     const inputRef = useRef();
     const [menu, setMenu] = useState("");
+    const [Coordinate, setCoordinate] = useCoordinate();
     const [messages, setMessages] = useState([
         {
             position:'left',
             type:'text',
-            text:'aidocent에 오신것을 환영합니다. 1.대화하기, 2.퀴즈풀기 중에 선택하여 입력해주세요.',
-            date:new Date()
+            text:'aidocent에 오신것을 환영합니다. 대화 입력창에 "질문하기" 또는 "퀴즈풀기"를 입력해보세요',
+            date:new Date(),
+            translate:props.translate,
         }
     ]);
 
@@ -41,7 +43,7 @@ const Chat = (props) => {
             position: 'right',
             type: 'text',
             text: question,
-            translate: translate,
+            translate: props.translate,
             date: new Date()
         };
 
@@ -62,7 +64,7 @@ const Chat = (props) => {
             position: 'right',
             type: 'text',
             text: question,
-            translate: translate,
+            translate: props.translate,
             date: new Date()
             
         };
@@ -74,17 +76,9 @@ const Chat = (props) => {
         fetch(url, { method: "POST", body: JSON.stringify({ data: answer }), headers: { "Access-Control-Allow-Origin": "*", "content-type": "application/json" } })
             .then((res) => res.json())
             .then((data) => {
+                console.log(data);
+                setCoordinate(data.answer);
                 setMessages(messages => [...messages, data]);
-                if (data.quiz_type !== undefined && data.quiz_type === "Null") {
-                    const url = `http://localhost:8080/aidocent/chat/open`;
-                    fetch(url, { method: "POST", headers: { "Access-Control-Allow-Origin": "*" } })
-                        .then((res) => res.json())
-                        .then((data) => {
-                            setMessages(messages => [...messages, data]);
-                        }).catch(() => {
-                            console.log("에러발생");
-                        });
-                }
             }).catch(() => {
                 console.log("에러발생");
             });
@@ -93,7 +87,7 @@ const Chat = (props) => {
     return (
         <div className="chat">
             <Card sx={{ height: '96vh', marginTop: '1vh' }}>
-                <CardContent style={{ backgroundColor: 'lightgray', height: '82vh' }}>
+                <CardContent style={{ backgroundColor: 'lightgray', height: '82vh'}}>
                     <MessageList
                         className='message-list'
                         lockable={true}
