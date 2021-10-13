@@ -28,7 +28,7 @@ public class EtriDao {
 	private static final String ACCESS_KEY = "417ac904-4b08-4ba6-9f5e-ea214b0994ad";
 
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> chatopen() {
+	public Map<String, Object> dialogOpen() {
 		Map<String, Object> params = new HashMap<String, Object>();
 		Map<String, String> argument = new HashMap<String, String>();
 
@@ -51,7 +51,7 @@ public class EtriDao {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> chatmessage(Map<String, Object> map) {
+	public Map<String, Object> failToAnswer(Map<String, Object> map) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		Map<String, String> argument = new HashMap<String, String>();
 

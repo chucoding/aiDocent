@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -49,7 +47,7 @@ public class ChatService {
 			text = "\"질문하기\" 또는  \"퀴즈풀기\"로만 입력해주세요. ";
 		}
 
-		Map<String, Object> resp = etriDao.chatopen();
+		Map<String, Object> resp = etriDao.dialogOpen();
 		Map<String, Object> return_object = (Map<String, Object>) MapUtils.getMap(resp, "return_object");
 		String uuid = MapUtils.getString(return_object, "uuid");
 		cache.put("uuid", uuid);
@@ -137,7 +135,7 @@ public class ChatService {
 		
 		if("".equals(result) || result.isEmpty()) {
 			datamap.put("uuid", (String) cache.get("uuid"));
-			Map<String, Object> resp = etriDao.chatmessage(datamap);
+			Map<String, Object> resp = etriDao.failToAnswer(datamap);
 			Map<String, Object> return_object = (Map<String, Object>) MapUtils.getMap(resp, "return_object");
 			Map<String, Object> resultMap = (Map<String, Object>) MapUtils.getMap(return_object, "result");
 			String system_text = MapUtils.getString(resultMap, "system_text").trim();

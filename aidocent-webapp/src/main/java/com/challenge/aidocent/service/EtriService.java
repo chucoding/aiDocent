@@ -30,61 +30,6 @@ public class EtriService {
 	@Autowired
 	Dictionary dictionary;
 
-	@Autowired
-	CacheUtils cache;
-
-	public Map chatopen() {
-		EtriDao chatDao = new EtriDao();
-		Map resp = chatDao.chatopen();
-		Map return_object = MapUtils.getMap(resp, "return_object");
-		String uuid = MapUtils.getString(return_object, "uuid");
-
-		cache.put("uuid", uuid);
-		return makeTemplate(resp);
-	}
-
-	public Map chatmessage(Map<String, Object> data) {
-		EtriDao chatDao = new EtriDao();
-		Map map = MapUtils.getMap(data, "data");
-
-		String uuid = (String) cache.get("uuid");
-		if (StringUtils.isEmpty(uuid)) {
-
-			Map expireMap = new HashMap();
-			Map chatbotInfo = new HashMap();
-			Map return_object = MapUtils.getMap(map, "return_object");
-			Map result = MapUtils.getMap(return_object, "result");
-
-			chatbotInfo.put("id", "user");
-
-			expireMap.put("id", "chatbot");
-			expireMap.put("text", "세션이 만료되었습니다.");
-			expireMap.put("createdAt", new Date());
-			expireMap.put("user", chatbotInfo);
-
-			return expireMap;
-		}
-
-		map.put("uuid", uuid);
-		return makeTemplate(chatDao.chatmessage(map));
-	}
-
-	private Map makeTemplate(Map resp) {
-
-		Map map = new HashMap();
-		Map chatbotInfo = new HashMap();
-		Map return_object = MapUtils.getMap(resp, "return_object");
-		Map result = MapUtils.getMap(return_object, "result");
-		chatbotInfo.put("id", "user");
-
-		map.put("id", "chatbot");
-		map.put("text", MapUtils.getString(result, "system_text"));
-		map.put("createdAt", new Date());
-		map.put("user", chatbotInfo);
-
-		return map;
-	}
-
 	// 객체 검출
 	public Map<String, Object> ObjectDetect(HttpServletRequest req, MultipartFile file) throws IllegalStateException, IOException {
 
@@ -184,7 +129,7 @@ public class EtriService {
 		String answer = "";
 
 		// 검출된 객채 있으면 문제 만들기
-		switch (quiz_type[rand.nextInt(3)]) {
+		switch ("search") {
 
 		case "search":
 			// 답변(좌표 리스트)과 질문(총 개수)
