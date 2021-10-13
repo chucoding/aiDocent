@@ -35,7 +35,6 @@ public class EtriService {
 	@Autowired
 	ChatService chatservice;
 
-	// 객체 검출
 	public Map<String, Object> ObjectDetect(HttpServletRequest req, MultipartFile file) throws IllegalStateException, IOException {
 
 		EtriDao chatDao = new EtriDao();

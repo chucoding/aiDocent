@@ -55,7 +55,6 @@ public class ChatController {
 			}
 		} else if ("dialog".equals(menu))
 			map = chatService.chatmessage(data, req);
-
 		return map;
 	}
 
