@@ -47,7 +47,7 @@ public class ChatService {
 			text = "\"질문하기\" 또는  \"퀴즈풀기\"로만 입력해주세요. ";
 		}
 
-		Map<String, Object> resp = etriDao.dialogOpen();
+		Map<String, Object> resp = etriDao.openDialog();
 		Map<String, Object> return_object = (Map<String, Object>) MapUtils.getMap(resp, "return_object");
 		String uuid = MapUtils.getString(return_object, "uuid");
 		cache.put("uuid", uuid);
@@ -61,17 +61,48 @@ public class ChatService {
 		
 		return answer;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> dialog(Map<String, Object> req) {
+		
+		Map<String, Object> data = (Map<String, Object>) MapUtils.getMap(req, "data");
+		data.put("uuid", (String) cache.get("uuid"));
+		
+		Map<String, Object> resp = etriDao.getDialog(data);
+		Map<String, Object> return_object = (Map<String, Object>) MapUtils.getMap(resp, "return_object");
+		Map<String, Object> resultMap = (Map<String, Object>) MapUtils.getMap(return_object, "result");
+		String intent = MapUtils.getString(resultMap, "system_text");
+		
+		
+		//String answer = getAnswer(intent);
+		
+		
+		
+		return null;
+	}
+	
+	private String getAnswer(String intent, String data) {
+		String answer = "";
+		
+		switch(intent) {
+		
+		case "wiki" :
+			
+			break;
+		}
+		
+		return answer;
+	}
+	
 
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> chatmessage(Map<String, Object> data, HttpServletRequest servletReq) {
-
-		EtriDao chatDao = new EtriDao();
 
 		Map<String, Object> datamap = (Map<String, Object>) MapUtils.getMap(data, "data");
 		Map<String, Object> answer = new HashMap<String, Object>();
 		String folderName = servletReq.getSession().getServletContext().getRealPath("/") + "resources" + File.separator + "tts";
 
-		Map<String, Object> map = chatDao.wiseNLU_spoken((String) datamap.get("text"));
+		Map<String, Object> map = etriDao.wiseNLU_spoken((String) datamap.get("text"));
 
 		Object[] text = nlp(map);
 		String[] str = text[0].toString().split(",");
@@ -111,7 +142,7 @@ public class ChatService {
 
 			for (int i = 0; i < str.length; i++) {
 				if (!is_str[i].isEmpty()) {
-					body = chatDao.wiki(str[i]);
+					body = etriDao.wiki(str[i]);
 
 					json = new JSONObject(body);
 					WiKiInfo = json.getJSONObject("return_object").getJSONObject("WiKiInfo");
@@ -135,7 +166,7 @@ public class ChatService {
 		
 		if("".equals(result) || result.isEmpty()) {
 			datamap.put("uuid", (String) cache.get("uuid"));
-			Map<String, Object> resp = etriDao.failToAnswer(datamap);
+			Map<String, Object> resp = etriDao.getDialog(datamap);
 			Map<String, Object> return_object = (Map<String, Object>) MapUtils.getMap(resp, "return_object");
 			Map<String, Object> resultMap = (Map<String, Object>) MapUtils.getMap(return_object, "result");
 			String system_text = MapUtils.getString(resultMap, "system_text").trim();
