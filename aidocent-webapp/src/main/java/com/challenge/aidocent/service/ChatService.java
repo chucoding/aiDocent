@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,9 +14,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.challenge.aidocent.dao.EtriDao;
 import com.challenge.aidocent.dao.GoogleDao;
+import com.challenge.aidocent.util.CacheUtils;
 import com.challenge.aidocent.util.Dictionary;
 
 @Service
@@ -22,7 +26,11 @@ public class ChatService {
 	@Autowired
 	Dictionary dictionary;
 
+	@Autowired
+	CacheUtils cache;
+	
 	private static final GoogleDao googleDao = new GoogleDao();
+	private static final EtriDao etriDao = new EtriDao();
 
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> chatopen(Map<String, Object> data) {
@@ -41,12 +49,18 @@ public class ChatService {
 			text = "\"질문하기\" 또는  \"퀴즈풀기\"로만 입력해주세요. ";
 		}
 
+		Map<String, Object> resp = etriDao.chatopen();
+		Map<String, Object> return_object = (Map<String, Object>) MapUtils.getMap(resp, "return_object");
+		String uuid = MapUtils.getString(return_object, "uuid");
+		cache.put("uuid", uuid);
+		
 		Map<String, Object> answer = new HashMap<String, Object>();
 		answer.put("position", "left");
 		answer.put("type", "text");
 		answer.put("text", text);
 		answer.put("date", new Date());
 		answer.put("menu", menu);
+		
 		return answer;
 	}
 
@@ -113,13 +127,28 @@ public class ChatService {
 					/*	}*/
 				}
 			}
-		}
+		} 
 
 		for (String object : is_str) {
 			if (!object.isEmpty() && (!object.contains("화면") && !object.contains("이미지") && !object.contains("그림"))) {
 				result += object + "<br/>";
 			}
 		}
+		
+		if("".equals(result) || result.isEmpty()) {
+			datamap.put("uuid", (String) cache.get("uuid"));
+			Map<String, Object> resp = etriDao.chatmessage(datamap);
+			Map<String, Object> return_object = (Map<String, Object>) MapUtils.getMap(resp, "return_object");
+			Map<String, Object> resultMap = (Map<String, Object>) MapUtils.getMap(return_object, "result");
+			String system_text = MapUtils.getString(resultMap, "system_text").trim();
+			system_text = system_text.substring(0, system_text.length()-1);
+			result = removeTags(system_text);
+			
+			if("".equals(result) || result.isEmpty()) {
+				result = "말씀해주신 부분에 대해 잘 모르겠어요.";
+			} 
+		}
+		
 		answer.put("position", "left");
 		answer.put("type", "text");
 		answer.put("text", result);
@@ -129,8 +158,12 @@ public class ChatService {
 
 		return answer;
 	}
+	
+	public String removeTags(String str) {
+		String s = StringUtils.delete(str, "(chat)");
+		return StringUtils.delete(s,"(/chat)");
+	}
 
-	@SuppressWarnings("unchecked")
 	private Object[] nlp(Map<String, Object> data) {
 		Object[] result = { "", false };
 		JSONObject body = new JSONObject(MapUtils.getMap(data, "return_object"));

@@ -31,7 +31,7 @@ public class EtriDao {
 		Map<String, Object> params = new HashMap<String, Object>();
 		Map<String, String> argument = new HashMap<String, String>();
 
-		argument.put("name", "Genie_Pizza");
+		argument.put("name", "FreeConversation");
 		argument.put("access_method", "internal_data");
 		argument.put("method", "open_dialog");
 

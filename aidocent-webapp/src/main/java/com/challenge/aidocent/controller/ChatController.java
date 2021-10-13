@@ -41,13 +41,13 @@ public class ChatController {
 		return chatService.chatopen(data);
 	}
 
-	@SuppressWarnings("unchecked")
 	@CrossOrigin("*")
 	@PostMapping(value = "/chat/{menu}")
 	public Map<String, Object> message(HttpServletRequest req, @RequestBody Map<String, Object> data, @PathVariable String menu) {	
 		Map<String, Object> map = new HashMap<String, Object>();
 		if("quiz".equals(menu)) map = etriService.quiz(data);
 		else if("dialog".equals(menu)) map = chatService.chatmessage(data, req);
+		System.out.println(map);
 		return map;
 	}
 	
