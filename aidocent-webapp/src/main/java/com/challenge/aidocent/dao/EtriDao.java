@@ -27,11 +27,12 @@ public class EtriDao {
 	private static final String OPEN_API_URL = "http://aiopen.etri.re.kr:8000/";
 	private static final String ACCESS_KEY = "417ac904-4b08-4ba6-9f5e-ea214b0994ad";
 
-	public Map chatopen() {
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> dialogOpen() {
 		Map<String, Object> params = new HashMap<String, Object>();
 		Map<String, String> argument = new HashMap<String, String>();
 
-		argument.put("name", "Genie_Pizza");
+		argument.put("name", "FreeConversation");
 		argument.put("access_method", "internal_data");
 		argument.put("method", "open_dialog");
 
@@ -41,15 +42,16 @@ public class EtriDao {
 		HttpHeaders headers = new HttpHeaders();
 
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		HttpEntity<Map> entity = new HttpEntity<Map>(params, headers);
+		HttpEntity<Map<String, Object>> entity = new HttpEntity<Map<String, Object>>(params, headers);
 		RestTemplate rt = new RestTemplate();
-		Map resp = rt.postForObject(OPEN_API_URL + "Dialog", entity, Map.class);
+		Map<String, Object> resp = rt.postForObject(OPEN_API_URL + "Dialog", entity, Map.class);
 
 		return resp;
 		// throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	public Map chatmessage(Map map) {
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> failToAnswer(Map<String, Object> map) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		Map<String, String> argument = new HashMap<String, String>();
 
@@ -64,10 +66,9 @@ public class EtriDao {
 		HttpHeaders headers = new HttpHeaders();
 
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		HttpEntity<Map> entity = new HttpEntity<Map>(params, headers);
+		HttpEntity<Map<String, Object>> entity = new HttpEntity<Map<String, Object>>(params, headers);
 		RestTemplate rt = new RestTemplate();
-		Map resp = rt.postForObject(OPEN_API_URL + "Dialog", entity, Map.class);
-		System.out.println(resp);
+		Map<String, Object> resp = rt.postForObject(OPEN_API_URL + "Dialog", entity, Map.class);
 
 		return resp;
 	}
@@ -286,8 +287,8 @@ public class EtriDao {
 		}
 		return result;
 	}
-	
-	//구문 분석
+
+	// 구문 분석
 	public Map wiseNLU_spoken(String text) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		Map<String, String> argument = new HashMap<String, String>();

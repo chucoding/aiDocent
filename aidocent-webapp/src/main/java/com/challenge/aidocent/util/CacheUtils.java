@@ -24,7 +24,6 @@ public class CacheUtils implements InitializingBean {
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		cache = CacheBuilder.newBuilder()
-				.expireAfterWrite(15, TimeUnit.MINUTES)
 				.maximumSize(1000)
 				.build();
 	}
