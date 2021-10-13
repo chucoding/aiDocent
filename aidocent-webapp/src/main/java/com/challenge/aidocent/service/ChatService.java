@@ -31,10 +31,10 @@ public class ChatService {
 
 		String text = "";
 		String menu = "";
-		if (map.get("text").equals("질문하기")) {
+		if (map.get("text").toString().replaceAll(" ", "").equals("질문하기")) {
 			text = "사진 또는 그림에 대해 궁금한 것을 물어보세요.";
 			menu = "dialog";
-		} else if (map.get("text").equals("퀴즈풀기")) {
+		} else if (map.get("text").toString().replaceAll(" ", "").equals("퀴즈풀기")) {
 			text = "지금부터 퀴즈를 시작하겠습니다.";
 			menu = "quiz";
 		} else {
@@ -131,8 +131,8 @@ public class ChatService {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Object[] nlp(Map<String, Object> data) {
-		Object[] result = { "", false };
+	public Object[] nlp(Map<String, Object> data) {
+		Object[] result = { "", false, 0 };
 		JSONObject body = new JSONObject(MapUtils.getMap(data, "return_object"));
 		JSONArray arr = body.getJSONArray("sentence");
 		body = arr.getJSONObject(0);
@@ -146,10 +146,13 @@ public class ChatService {
 					result[0] += ",";
 				result[0] += arr.getJSONObject(i).getString("lemma").toString();
 			}
-
 			if (arr.getJSONObject(i).getString("type").equals("NP")) {
 				result[1] = true;
 			}
+			if (arr.getJSONObject(i).getString("type").equals("SN")) {
+				result[2] = arr.getJSONObject(i).getString("lemma").toString();
+			}
+
 		}
 		return result;
 	}

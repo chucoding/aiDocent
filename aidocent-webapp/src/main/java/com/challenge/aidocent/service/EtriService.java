@@ -32,6 +32,8 @@ public class EtriService {
 
 	@Autowired
 	CacheUtils cache;
+	@Autowired
+	ChatService chatservice;
 
 	public Map chatopen() {
 		EtriDao chatDao = new EtriDao();
@@ -161,7 +163,7 @@ public class EtriService {
 	}
 
 	public Map<String, Object> quiz(Map<String, Object> data) {
-		String[] quiz_type = { "search", "number", "word"/*, "wiki"*/ };
+		String[] quiz_type = { /*"search",*/ "number", "word"/*, "wiki"*/ };
 		Random rand = new Random();
 		Map<?, ?> is_obj = MapUtils.getMap(data, "data");
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -174,7 +176,7 @@ public class EtriService {
 			map.put("text", "검출된 객체가 없어 퀴즈를 진행할 수 없습니다.");
 			map.put("createdAt", new Date());
 			map.put("user", chatbotInfo);
-			map.put("quiz_type", "Null");
+			map.put("quiz_type", "null");
 			return map;
 		}
 		JSONObject body = new JSONObject(is_obj.get("translate").toString());
@@ -184,12 +186,12 @@ public class EtriService {
 		String answer = "";
 
 		// 검출된 객채 있으면 문제 만들기
-		switch (quiz_type[rand.nextInt(3)]) {
+		switch (quiz_type[rand.nextInt(2)]) {
 
-		case "search":
+		/*case "search":
 			// 답변(좌표 리스트)과 질문(총 개수)
 			JSONArray list = new JSONArray();
-
+		
 			for (int i = 0; i < arr.length(); i++) {
 				if (select_text.equals(arr.getJSONObject(i).get("class").toString())) {
 					list.put(arr.getJSONObject(i));
@@ -201,14 +203,15 @@ public class EtriService {
 					break;
 				}
 			}
-
+		
 			map.put("id", "chatbot");
 			map.put("text", answer + "을(를) 이미지에서 찾아 클릭해주세요.");
 			map.put("answer", list);
 			map.put("createdAt", new Date());
 			map.put("user", chatbotInfo);
 			map.put("quiz_type", "search");
-			break;
+			map.put("menu", "quiz");
+			break;*/
 
 		case "number":
 			// 답변과 질문(총 개수)
@@ -228,10 +231,11 @@ public class EtriService {
 			}
 			map.put("id", "chatbot");
 			map.put("text", str);
-			map.put("answer", total);
+			map.put("answer", str + "/" + total);
 			map.put("createdAt", new Date());
 			map.put("user", chatbotInfo);
 			map.put("quiz_type", "number");
+			map.put("menu", "quiz");
 			break;
 
 		case "word":
@@ -244,10 +248,11 @@ public class EtriService {
 			}
 			map.put("id", "chatbot");
 			map.put("text", select_text + "의 한글 뜻이 어떻게 되나요?");
-			map.put("answer", answer);
+			map.put("answer", select_text + "의 한글 뜻이 어떻게 되나요?/" + answer);
 			map.put("createdAt", new Date());
 			map.put("user", chatbotInfo);
 			map.put("quiz_type", "word");
+			map.put("menu", "quiz");
 			break;
 
 		/*case "wiki":
@@ -277,6 +282,66 @@ public class EtriService {
 			map.put("user", chatbotInfo);
 			map.put("quiz_type", "wiki");
 			break;*/
+		}
+
+		return map;
+	}
+
+	public Map<String, Object> quiz_answer(Map<String, Object> data) {
+		EtriDao chatDao = new EtriDao();
+		data = (Map<String, Object>) MapUtils.getMap(data, "data");
+		String quiz_type = data.get("quiz_type").toString();
+		String answer = data.get("text").toString();
+		String[] quiz_QNA = (data.get("quiz_answer").toString()).split("/");
+		Map<String, Object> map = null;
+		Object[] text;
+		Map chatbotInfo = new HashMap();
+		chatbotInfo.put("id", "user");
+
+		String result = "";
+		map = chatDao.wiseNLU_spoken(answer);
+		text = chatservice.nlp(map);
+		switch (quiz_type) {
+		case "number":
+
+			if (Integer.parseInt(quiz_QNA[1].toString()) == Integer.parseInt(text[2].toString())) {
+				result = "정답입니다.";
+			} else {
+				map = chatDao.wiseNLU_spoken(quiz_QNA[0]);
+				text = chatservice.nlp(map);
+				String[] noun = text[0].toString().split(",");
+
+				for (int i = 0; i < dictionary.getEc_noun().length; i++) {
+					if (dictionary.getKo_noun()[i].equals(noun[0])) {
+						result = noun[0] + "는(은) " + quiz_QNA[1] + " " + dictionary.getMeasure()[i] + "입니다.";
+						break;
+					}
+				}
+			}
+			map = new HashMap<String, Object>();
+			map.put("id", "chatbot");
+			map.put("text", result);
+			map.put("createdAt", new Date());
+			map.put("user", chatbotInfo);
+			map.put("quiz_type", "null");
+			map.put("menu", "");
+			break;
+		case "word":
+
+			if (quiz_QNA[1].equals(text[0].toString())) {
+				result = "정답입니다.";
+			} else {
+				result = quiz_QNA[1] + "입니다.";
+			}
+			map = new HashMap<String, Object>();
+			map.put("id", "chatbot");
+			map.put("text", result);
+			map.put("createdAt", new Date());
+			map.put("user", chatbotInfo);
+			map.put("quiz_type", "null");
+			map.put("menu", "");
+			break;
+
 		}
 
 		return map;
