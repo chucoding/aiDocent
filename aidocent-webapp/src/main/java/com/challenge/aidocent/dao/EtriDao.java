@@ -287,8 +287,8 @@ public class EtriDao {
 		}
 		return result;
 	}
-	
-	//구문 분석
+
+	// 구문 분석
 	public Map wiseNLU_spoken(String text) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		Map<String, String> argument = new HashMap<String, String>();

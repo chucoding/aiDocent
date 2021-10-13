@@ -28,7 +28,7 @@ public class ChatController {
 
 	@Autowired
 	ChatService chatService;
-	
+
 	@Autowired
 	EtriService etriService;
 
@@ -43,14 +43,21 @@ public class ChatController {
 
 	@CrossOrigin("*")
 	@PostMapping(value = "/chat/{menu}")
-	public Map<String, Object> message(HttpServletRequest req, @RequestBody Map<String, Object> data, @PathVariable String menu) {	
+	public Map<String, Object> message(HttpServletRequest req, @RequestBody Map<String, Object> data, @PathVariable String menu) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		if("quiz".equals(menu)) map = etriService.quiz(data);
-		else if("dialog".equals(menu)) map = chatService.chatmessage(data, req);
-		System.out.println(map);
+		System.out.println(MapUtils.getMap(data, "data").get("quiz_type"));
+		if ("quiz".equals(menu)) {
+			if (MapUtils.getMap(data, "data").get("quiz_type") == null || MapUtils.getMap(data, "data").get("quiz_type").toString().equals("null")) {
+				map = etriService.quiz(data);
+
+			} else {
+				map = etriService.quiz_answer(data);
+			}
+		} else if ("dialog".equals(menu))
+			map = chatService.chatmessage(data, req);
 		return map;
 	}
-	
+
 	/*
 	@CrossOrigin("*")
 	@PostMapping(value = "/chat/quiz")
