@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,6 +26,8 @@ public class ChatService {
 	@Autowired
 	Dictionary dictionary;
 
+	private static final GoogleDao googleDao = new GoogleDao();
+	
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> chatopen(Map<String, Object> data) {
 
@@ -32,14 +35,14 @@ public class ChatService {
 
 		String text = "";
 		String menu = "";
-		if (map.get("text").equals("1")) {
+		if (map.get("text").equals("질문하기")) {
 			text = "사진 또는 그림에 대해 궁금한 것을 물어보세요.";
 			menu = "dialog";
-		} else if (map.get("text").equals("2")) {
+		} else if (map.get("text").equals("퀴즈풀기")) {
 			text = "지금부터 퀴즈를 시작하겠습니다.";
 			menu = "quiz";
 		} else {
-			text = "숫자 1 또는 2를 클릭해주세요";
+			text = "\"질문하기\" 또는  \"퀴즈풀기\"로만 입력해주세요. ";
 		}
 
 		Map<String, Object> answer = new HashMap<String, Object>();
@@ -54,7 +57,6 @@ public class ChatService {
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> chatmessage(Map<String, Object> data, HttpServletRequest servletReq) {
 
-		GoogleDao googleDao = new GoogleDao();
 		EtriDao chatDao = new EtriDao();
 
 		Map<String, Object> datamap = (Map<String, Object>) MapUtils.getMap(data, "data");
