@@ -10,6 +10,7 @@ import Vocal from '@untemps/react-vocal'
 
 import 'react-chat-elements/dist/main.css';
 import AudioRecord from './audio';
+import useCoordinate from './canvas/coordinate';
 
 const Chat = (props) => {
     const [question, setQuestion] = useState("");
@@ -27,6 +28,7 @@ const Chat = (props) => {
     ]);
     const [quiz_type, setquiz_type] = useState("null");
     const [quiz_answer, setquiz_answer] = useState("");
+    const [Coordinate, setCoordinate] = useCoordinate();
 
     const _onVocalStart = () => {
         inputRef.current.clear();
