@@ -22,7 +22,7 @@ const Chat = (props) => {
             text: 'aidocent에 오신것을 환영합니다. 대화 입력창에 "질문하기" 또는 "퀴즈풀기"를 입력해보세요',
             date: new Date(),
             translate: props.translate,
-            quiz_type: 'Null'
+            quiz_type: 'null'
         }
     ]);
     const [quiz_type, setquiz_type] = useState("null");
@@ -88,9 +88,7 @@ const Chat = (props) => {
                 }).catch(() => {
                     console.log("에러발생");
                 });
-        } else if (menu === "" || menu === undefined) {
-            setMessages([...messages, answer]);
-            setQuestion("");
+        } else if (menu === "null" || menu === "" || menu === undefined) {
             fetch(url, { method: "POST", body: JSON.stringify({ data: answer }), headers: { "Access-Control-Allow-Origin": "*", "content-type": "application/json" } })
                 .then((res) => res.json())
                 .then((data) => {
@@ -109,12 +107,11 @@ const Chat = (props) => {
                     console.log(data);
                     setquiz_type(data.quiz_type);
                     setquiz_answer(data.quiz_answer);
-                    setMenu(data.menu);
                     setMessages(messages => [...messages, data]);
-                    console.log(data.menu === '');
-                    if (data.menu === '') {
-                        this.inputRef.current.clear();
-                        this.inputRef.current.props.rightButtons.props.onClick();
+                    if (data.menu === "null") {
+                        setMenu(data.menu);
+                        inputRef.current.clear();
+                        inputRef.current.props.rightButtons.props.onClick();
                     }
                 }).catch(() => {
                     console.log("에러발생");

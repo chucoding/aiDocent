@@ -52,15 +52,16 @@ public class ChatController {
 		if ("quiz".equals(menu)) {
 			if (MapUtils.getMap(data, "data").get("quiz_type") == null || MapUtils.getMap(data, "data").get("quiz_type").toString().equals("null")) {
 				map = etriService.quiz(data);
-
 			} else {
 				map = etriService.quiz_answer(data);
 			}
 		} else if ("dialog".equals(menu))
 			map = chatService.dialog(data, req);
+		else {
+			map = chatService.chatopen(data);
+		}
 		return map;
 	}
-
 	/*
 	@CrossOrigin("*")
 	@PostMapping(value = "/chat/quiz")
