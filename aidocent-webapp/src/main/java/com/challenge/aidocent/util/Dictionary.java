@@ -2,6 +2,8 @@ package com.challenge.aidocent.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.springframework.stereotype.Repository;
@@ -15,37 +17,23 @@ public class Dictionary {
 		InputStream is = classLoader.getResourceAsStream("data/dictionary.properties");
 		Properties properties = new java.util.Properties();
 		properties.load(is);
-		setEc_noun(properties.getProperty("en_noun").split(","));
-		setKo_noun(properties.getProperty("ko_noun").split(","));
-		setMeasure(properties.getProperty("measure").split(","));
+		setDic(properties);
 	}
 
-	private String[] ec_noun;
-	private String[] ko_noun;
-	private String[] measure;
+	private Map<String, Object> dic;
 
-	public String[] getEc_noun() {
-		return ec_noun;
+	public Map<String, Object> getDic() {
+		return dic;
 	}
 
-	public void setEc_noun(String[] ec_noun) {
-		this.ec_noun = ec_noun;
-	}
+	public void setDic(Properties properties) {
+		Map<String, Object> map = new HashMap<String, Object>();
 
-	public String[] getKo_noun() {
-		return ko_noun;
-	}
+		for (String key : properties.stringPropertyNames()) {
+			map.put(key, properties.getProperty(key));
+		}
 
-	public void setKo_noun(String[] ko_noun) {
-		this.ko_noun = ko_noun;
-	}
-
-	public String[] getMeasure() {
-		return measure;
-	}
-
-	public void setMeasure(String[] measure) {
-		this.measure = measure;
+		this.dic = map;
 	}
 
 }
