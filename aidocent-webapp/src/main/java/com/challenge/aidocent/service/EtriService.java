@@ -251,7 +251,6 @@ public class EtriService {
 		text = chatservice.nlp(map);
 		switch (quiz_type) {
 		case "number":
-
 			if (Integer.parseInt(quiz_QNA[1].toString()) == Integer.parseInt(text[2].toString())) {
 				result = "정답입니다.";
 			} else {
@@ -266,31 +265,22 @@ public class EtriService {
 					}
 				}
 			}
-			map = new HashMap<String, Object>();
-			map.put("id", "chatbot");
-			map.put("text", result);
-			map.put("createdAt", new Date());
-			map.put("user", chatbotInfo);
-			map.put("quiz_type", "null");
-			map.put("menu", "");
 			break;
 		case "word":
-
 			if (quiz_QNA[1].equals(text[0].toString())) {
 				result = "정답입니다.";
 			} else {
 				result = quiz_QNA[1] + "입니다.";
 			}
-			map = new HashMap<String, Object>();
-			map.put("id", "chatbot");
-			map.put("text", result);
-			map.put("createdAt", new Date());
-			map.put("user", chatbotInfo);
-			map.put("quiz_type", "null");
-			map.put("menu", "");
 			break;
-
 		}
+		map = new HashMap<String, Object>();
+		map.put("id", "chatbot");
+		map.put("text", result);
+		map.put("createdAt", new Date());
+		map.put("user", chatbotInfo);
+		map.put("quiz_type", "null");
+		map.put("menu", "null");
 
 		return map;
 	}

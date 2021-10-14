@@ -34,7 +34,7 @@ public class ChatService {
 	public Map<String, Object> chatopen(Map<String, Object> data) {
 
 		Map<String, Object> map = (Map<String, Object>) MapUtils.getMap(data, "data");
-
+		System.out.println(map);
 		String text = "";
 		String menu = "";
 		if (map.get("text").toString().replaceAll(" ", "").equals("질문하기")) {
