@@ -80,14 +80,7 @@ public class ChatService {
 
 		// 사용자가 입력한 단어 영어로 변역
 		for (int j = 0; j < str.length; j++) {
-			for (int i = 0; i < dictionary.getKo_noun().length; i++) {
-				if (dictionary.getKo_noun()[i].equals(str[j])) {
-					is_str[j] = dictionary.getEc_noun()[i];
-					break;
-				} else {
-					is_str[j] = "";
-				}
-			}
+			is_str[j] = dictionary.getDic().containsKey(str[j]) ? dictionary.getDic().get(str[j]).toString() : "";
 		}
 		JSONArray jArray = new JSONObject(datamap.get("translate").toString()).getJSONArray("data");
 		String temp = "";

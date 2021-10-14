@@ -171,12 +171,7 @@ public class EtriService {
 					total += 1;
 				}
 			}
-			for (int i = 0; i < dictionary.getEc_noun().length; i++) {
-				if (dictionary.getEc_noun()[i].equals(select_text)) {
-					str = dictionary.getKo_noun()[i] + "는(은) 몇 " + dictionary.getMeasure()[i] + " 인가요?";
-					break;
-				}
-			}
+			str = dictionary.getDic().get(select_text.replaceAll(" ", "_") + ".ko") + "는(은) 몇 " + dictionary.getDic().get(select_text.replaceAll(" ", "_") + ".measure") + " 인가요?";
 			map.put("id", "chatbot");
 			map.put("text", str);
 			map.put("answer", str + "/" + total);
@@ -188,12 +183,7 @@ public class EtriService {
 
 		case "word":
 			// 답변과 질문
-			for (int i = 0; i < dictionary.getEc_noun().length; i++) {
-				if (dictionary.getEc_noun()[i].equals(select_text)) {
-					answer = dictionary.getKo_noun()[i];
-					break;
-				}
-			}
+			answer = (String) dictionary.getDic().get(select_text.replaceAll(" ", "_") + ".ko");
 			map.put("id", "chatbot");
 			map.put("text", select_text + "의 한글 뜻이 어떻게 되나요?");
 			map.put("answer", select_text + "의 한글 뜻이 어떻게 되나요?/" + answer);
@@ -257,13 +247,7 @@ public class EtriService {
 				map = chatDao.wiseNLU_spoken(quiz_QNA[0]);
 				text = chatservice.nlp(map);
 				String[] noun = text[0].toString().split(",");
-
-				for (int i = 0; i < dictionary.getEc_noun().length; i++) {
-					if (dictionary.getKo_noun()[i].equals(noun[0])) {
-						result = noun[0] + "는(은) " + quiz_QNA[1] + " " + dictionary.getMeasure()[i] + "입니다.";
-						break;
-					}
-				}
+				result = noun[0] + "는(은) " + quiz_QNA[1] + " " + dictionary.getDic().get(dictionary.getDic().get(noun[0]).toString().replaceAll(" ", "_") + ".measure") + "입니다.";
 			}
 			break;
 		case "word":
