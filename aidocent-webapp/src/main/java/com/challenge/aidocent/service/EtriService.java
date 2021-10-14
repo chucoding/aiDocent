@@ -55,7 +55,7 @@ public class EtriService {
 
 		String body = chatDao.ObjectDetect(path);
 		saveObjectToCache(body);
-		
+
 		result.put("file_name", file_name);
 		result.put("body", body);
 		return result;
@@ -236,13 +236,12 @@ public class EtriService {
 		String answer = data.get("text").toString();
 		String[] quiz_QNA = (data.get("quiz_answer").toString()).split("/");
 		Map<String, Object> map = null;
-		Object[] text;
 		Map chatbotInfo = new HashMap();
 		chatbotInfo.put("id", "user");
 
 		String result = "";
 		map = chatDao.wiseNLU_spoken(answer);
-		text = chatservice.nlp(map);
+		Object[] text = chatservice.nlp(map);
 		switch (quiz_type) {
 		case "number":
 			if (Integer.parseInt(quiz_QNA[1].toString()) == Integer.parseInt(text[2].toString())) {
@@ -251,7 +250,13 @@ public class EtriService {
 				map = chatDao.wiseNLU_spoken(quiz_QNA[0]);
 				text = chatservice.nlp(map);
 				String[] noun = text[0].toString().split(",");
-				result = noun[0] + "는(은) " + quiz_QNA[1] + " " + dictionary.getDic().get(dictionary.getDic().get(noun[0]).toString().replaceAll(" ", "_") + ".measure") + "입니다.";
+				if (noun.length != 1) {
+					for (String object : noun) {
+						result += object;
+					}
+					noun[0] = result;
+				}
+				result = noun[0] + "는(은) " + quiz_QNA[1] + " " + dictionary.getDic().get(dictionary.getDic().get(noun[0]) + ".measure") + "입니다.";
 			}
 			break;
 		case "word":
@@ -272,20 +277,20 @@ public class EtriService {
 
 		return map;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void saveObjectToCache(String body) throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
-		Map<String, Object> map = mapper.readValue(body, Map.class);		
+		Map<String, Object> map = mapper.readValue(body, Map.class);
 		Map<String, Object> return_object = (Map<String, Object>) MapUtils.getMap(map, "return_object");
 		cache.put("image_object", return_object);
-		
+
 		Map<String, Integer> objCntMap = new HashMap<String, Integer>();
-		
+
 		List<Map<String, Object>> dataList = (List<Map<String, Object>>) MapUtils.getObject(return_object, "data");
-		for(Map<String, Object> data : dataList) {
+		for (Map<String, Object> data : dataList) {
 			String cl = (String) data.get("class");
-			objCntMap.put(cl, objCntMap.getOrDefault(cl, 0)+1);
+			objCntMap.put(cl, objCntMap.getOrDefault(cl, 0) + 1);
 		}
 		cache.put("objCntMap", objCntMap);
 		System.out.println(objCntMap);
