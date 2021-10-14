@@ -1,9 +1,11 @@
 package com.challenge.aidocent.service;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,9 +20,13 @@ import com.challenge.aidocent.dao.EtriDao;
 import com.challenge.aidocent.dao.GoogleDao;
 import com.challenge.aidocent.util.CacheUtils;
 import com.challenge.aidocent.util.Dictionary;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class ChatService {
+	
 	@Autowired
 	Dictionary dictionary;
 
@@ -58,37 +64,81 @@ public class ChatService {
 		answer.put("text", text);
 		answer.put("date", new Date());
 		answer.put("menu", menu);
-
+		
 		return answer;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> dialog(Map<String, Object> req) {
+	public Map<String, Object> dialog(Map<String, Object> req,  HttpServletRequest servletReq) throws JsonParseException, JsonMappingException, IOException {
 		
+		Map<String, Object> answerMap = new HashMap<String, Object>();
+		String folderName = servletReq.getSession().getServletContext().getRealPath("/") + "resources" + File.separator + "tts";
+
 		Map<String, Object> data = (Map<String, Object>) MapUtils.getMap(req, "data");
 		data.put("uuid", (String) cache.get("uuid"));
 		
 		Map<String, Object> resp = etriDao.getDialog(data);
 		Map<String, Object> return_object = (Map<String, Object>) MapUtils.getMap(resp, "return_object");
 		Map<String, Object> resultMap = (Map<String, Object>) MapUtils.getMap(return_object, "result");
-		String intent = MapUtils.getString(resultMap, "system_text");
+		String system_text = MapUtils.getString(resultMap, "system_text");
+		String text = getAnswer(system_text, (String)data.get("text"));
 		
-		
-		//String answer = getAnswer(intent);
-		
-		
-		
-		return null;
+		answerMap.put("position", "left");
+		answerMap.put("type", "text");
+		answerMap.put("text", text);
+		answerMap.put("date", new Date());
+		answerMap.put("menu", "dialog");
+		answerMap.put("ttsUrl", googleDao.synthesizeText(folderName, text));
+
+		return answerMap;
 	}
 	
-	private String getAnswer(String intent, String data) {
+	@SuppressWarnings("unchecked")
+	private String getAnswer(String system_text, String question) throws JsonParseException, JsonMappingException, IOException {
 		String answer = "";
+		StringTokenizer st = new StringTokenizer(system_text," ");
+		String intent = st.nextToken().trim();
+		String entity = st.nextToken().trim();
 		
+		//복합질문 처리 어떻게??
 		switch(intent) {
 		
 		case "wiki" :
-			
+			String body = etriDao.wiki(question);
+			JSONObject json = new JSONObject(body);
+			JSONObject WiKiInfo = json.getJSONObject("return_object").getJSONObject("WiKiInfo");
+			JSONArray jArray = WiKiInfo.getJSONArray("AnswerInfo");
+			answer = jArray.getJSONObject(0).getString("answer");	
 			break;
+		case "exist" :
+			Map<String, Integer> objCntMap = (Map<String, Integer>) cache.get("objCntMap");
+			System.out.println(objCntMap);
+			System.out.println(entity);
+			System.out.println(MapUtils.getIntValue(objCntMap, entity));
+			System.out.println(objCntMap.get(entity));
+			int cnt = MapUtils.getIntValue(objCntMap, entity);
+			String meaure = "";
+			String name = "";
+			
+			for (int i = 0; i < dictionary.getEc_noun().length; i++) {
+				if (entity.equals(dictionary.getEc_noun()[i])) {
+					meaure = dictionary.getMeasure()[i];
+					name = dictionary.getKo_noun()[i];
+					break;
+				}
+			}
+			if(cnt < 1) {
+				answer = String.format("화면에 %s이(가) 없습니다.", name);
+			} else {
+				answer = String.format("화면에 %s이(가) %d%s 있습니다.", name,cnt,meaure);				
+			}
+			break;
+		default :	
+			String ambiguity = removeTags(intent);
+			answer = ambiguity.substring(0, intent.length() - 1);
+			if ("".equals(answer) || answer.isEmpty()) {
+				answer = "말씀해주신 부분에 대해 잘 모르겠어요.";
+			}
 		}
 		
 		return answer;
