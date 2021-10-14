@@ -10,7 +10,6 @@ import Vocal from '@untemps/react-vocal'
 
 import 'react-chat-elements/dist/main.css';
 import AudioRecord from './audio';
-import useCoordinate from './canvas/coordinate';
 
 const Chat = (props) => {
     const [question, setQuestion] = useState("");
@@ -28,8 +27,8 @@ const Chat = (props) => {
     ]);
     const [quiz_type, setquiz_type] = useState("null");
     const [quiz_answer, setquiz_answer] = useState("");
-    const [Coordinate, setCoordinate] = useCoordinate();
-
+    var audio = document.createElement("Audio");
+    var tts_path = "http://localhost:8080/aidocent/";
     const _onVocalStart = () => {
         inputRef.current.clear();
     }
@@ -38,6 +37,7 @@ const Chat = (props) => {
         console.log(result);
         console.log(inputRef.current);
         setQuestion(result);
+        inputRef.current.props.rightButtons.props.onClick();
     }
 
     const openChat = () => {
@@ -55,9 +55,15 @@ const Chat = (props) => {
             fetch(url, { method: "POST", body: JSON.stringify({ data: answer }), headers: { "Access-Control-Allow-Origin": "*", "content-type": "application/json" } })
                 .then((res) => res.json())
                 .then((data) => {
+                    console.log(data);
                     setMenu(data.menu);
                     setquiz_type(data.quiz_type);
                     setMessages(messages => [...messages, data]);
+                    if (data.ttsUrl !== undefined) {
+                        console.log( tts_path + data.ttsUrl);
+                        audio.src = tts_path + data.ttsUrl;
+                        audio.play();
+                    }
                     if (data.menu == "quiz") {
                         inputRef.current.clear();
                         inputRef.current.props.rightButtons.props.onClick();
@@ -87,6 +93,10 @@ const Chat = (props) => {
                     setquiz_type(data.quiz_type);
                     setquiz_answer(data.answer);
                     setMessages(messages => [...messages, data]);
+                    if (data.ttsUrl !== undefined) {
+                        audio.src = tts_path + data.ttsUrl;
+                        audio.play();
+                    }
                 }).catch(() => {
                     console.log("에러발생");
                 });
@@ -96,6 +106,10 @@ const Chat = (props) => {
                 .then((data) => {
                     console.log(data);
                     setMessages(messages => [...messages, data]);
+                    if (data.ttsUrl !== undefined) {
+                        audio.src = tts_path + data.ttsUrl;
+                        audio.play();
+                    }
                 }).catch(() => {
                     console.log("에러발생");
                 });
@@ -110,6 +124,10 @@ const Chat = (props) => {
                     setquiz_type(data.quiz_type);
                     setquiz_answer(data.quiz_answer);
                     setMessages(messages => [...messages, data]);
+                    if (data.ttsUrl !== undefined) {
+                        audio.src = tts_path + data.ttsUrl;
+                        audio.play();
+                    }
                     if (data.menu === "null") {
                         setMenu(data.menu);
                         inputRef.current.clear();

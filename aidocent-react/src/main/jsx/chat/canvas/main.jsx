@@ -9,7 +9,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import TextField from '@mui/material/TextField';
-import useCoordinate from './coordinate';
 
 const Canvas = (props) => {
 
@@ -17,11 +16,11 @@ const Canvas = (props) => {
     const translate = props.translate;
     var tts_path = "http://localhost:8080/aidocent/";
     var audio = document.createElement("Audio");
-
+    console.log(translate);
+    console.log(props);
+    
     const [edit, setEdit] = useState(false);
     const [text, setText] = useState(props.vision_text);
-    const [Coordinate, setCoordinate] = useCoordinate();
-
     const readtts = () => {
         const url = `http://localhost:8080/aidocent/chat/read`;
         console.log(text);
@@ -40,7 +39,11 @@ const Canvas = (props) => {
         <div className="canvas">
             <Card sx={{ height: '96vh', marginTop: '1vh', overflow:"auto" }}>
                 <CardActionArea sx={{textAlign:"center", background:"lightgray" }}>
-                    <Coordinate imagePath={{imagePath}}/>
+                    <CardMedia
+                        component="img"
+                        image={imagePath}
+                        sx={{maxWidth:"59%", maxHeight:"70%", display:"inline-block"}}
+                    />
                 </CardActionArea>
                 <CardContent>
                     {edit ?

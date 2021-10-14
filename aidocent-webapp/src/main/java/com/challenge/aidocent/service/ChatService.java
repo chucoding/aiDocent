@@ -22,7 +22,6 @@ import com.challenge.aidocent.util.CacheUtils;
 import com.challenge.aidocent.util.Dictionary;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class ChatService {
@@ -37,8 +36,8 @@ public class ChatService {
 	private static final EtriDao etriDao = new EtriDao();
 
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> chatopen(Map<String, Object> data) {
-
+	public Map<String, Object> chatopen(Map<String, Object> data, HttpServletRequest servletReq) {
+		String folderName = servletReq.getSession().getServletContext().getRealPath("/") + "resources" + File.separator + "tts";
 		Map<String, Object> map = (Map<String, Object>) MapUtils.getMap(data, "data");
 		System.out.println(map);
 		String text = "";
@@ -64,6 +63,7 @@ public class ChatService {
 		answer.put("text", text);
 		answer.put("date", new Date());
 		answer.put("menu", menu);
+		answer.put("ttsUrl", googleDao.synthesizeText(folderName, text));
 
 		return answer;
 	}

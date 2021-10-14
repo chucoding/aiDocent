@@ -41,7 +41,7 @@ public class ChatController {
 	@CrossOrigin("*")
 	@PostMapping(value = "/chat/open")
 	public Map open(HttpServletRequest req, @RequestBody Map<String, Object> data) {
-		return chatService.chatopen(data);
+		return chatService.chatopen(data, req);
 	}
 
 	@CrossOrigin("*")
@@ -51,14 +51,14 @@ public class ChatController {
 		System.out.println(MapUtils.getMap(data, "data").get("quiz_type"));
 		if ("quiz".equals(menu)) {
 			if (MapUtils.getMap(data, "data").get("quiz_type") == null || MapUtils.getMap(data, "data").get("quiz_type").toString().equals("null")) {
-				map = etriService.quiz(data);
+				map = etriService.quiz(data, req);
 			} else {
-				map = etriService.quiz_answer(data);
+				map = etriService.quiz_answer(data, req);
 			}
 		} else if ("dialog".equals(menu))
 			map = chatService.dialog(data, req);
 		else {
-			map = chatService.chatopen(data);
+			map = chatService.chatopen(data, req);
 		}
 		return map;
 	}

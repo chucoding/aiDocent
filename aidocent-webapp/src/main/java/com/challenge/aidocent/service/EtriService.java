@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.challenge.aidocent.dao.EtriDao;
+import com.challenge.aidocent.dao.GoogleDao;
 import com.challenge.aidocent.util.CacheUtils;
 import com.challenge.aidocent.util.Dictionary;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -36,6 +37,7 @@ public class EtriService {
 	@Autowired
 	ChatService chatservice;
 
+	private static final GoogleDao googleDao = new GoogleDao();
 	public Map<String, Object> ObjectDetect(HttpServletRequest req, MultipartFile file) throws IllegalStateException, IOException {
 
 		EtriDao chatDao = new EtriDao();
@@ -113,10 +115,12 @@ public class EtriService {
 		return chatDao.WiseQAnal(text);
 	}
 
-	public Map<String, Object> quiz(Map<String, Object> data) {
+	public Map<String, Object> quiz(Map<String, Object> data, HttpServletRequest req) {
+		String folderName = req.getSession().getServletContext().getRealPath("/") + "resources" + File.separator + "tts";
 		String[] quiz_type = { /*"search",*/ "number", "word"/*, "wiki"*/ };
 		Random rand = new Random();
 		Map<?, ?> is_obj = MapUtils.getMap(data, "data");
+		String voice = is_obj.get("voice").toString();
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> chatbotInfo = new HashMap<String, Object>();
 		chatbotInfo.put("id", "user");
@@ -183,6 +187,7 @@ public class EtriService {
 			map.put("user", chatbotInfo);
 			map.put("quiz_type", "number");
 			map.put("menu", "quiz");
+			map.put("ttsUrl", googleDao.synthesizeText(folderName, str));
 			break;
 
 		case "word":
@@ -195,6 +200,7 @@ public class EtriService {
 			map.put("user", chatbotInfo);
 			map.put("quiz_type", "word");
 			map.put("menu", "quiz");
+			map.put("ttsUrl", googleDao.synthesizeText(folderName, select_text + "의 한글 뜻이 어떻게 되나요?"));
 			break;
 
 		/*case "wiki":
@@ -229,8 +235,9 @@ public class EtriService {
 		return map;
 	}
 
-	public Map<String, Object> quiz_answer(Map<String, Object> data) {
+	public Map<String, Object> quiz_answer(Map<String, Object> data, HttpServletRequest req) {
 		EtriDao chatDao = new EtriDao();
+		String folderName = req.getSession().getServletContext().getRealPath("/") + "resources" + File.separator + "tts";
 		data = (Map<String, Object>) MapUtils.getMap(data, "data");
 		String quiz_type = data.get("quiz_type").toString();
 		String answer = data.get("text").toString();
@@ -274,6 +281,7 @@ public class EtriService {
 		map.put("user", chatbotInfo);
 		map.put("quiz_type", "null");
 		map.put("menu", "null");
+		map.put("ttsUrl", googleDao.synthesizeText(folderName, result));
 
 		return map;
 	}
