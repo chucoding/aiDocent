@@ -28,11 +28,11 @@ public class EtriDao {
 	private static final String ACCESS_KEY = "417ac904-4b08-4ba6-9f5e-ea214b0994ad";
 
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> dialogOpen() {
+	public Map<String, Object> openDialog() {
 		Map<String, Object> params = new HashMap<String, Object>();
 		Map<String, String> argument = new HashMap<String, String>();
 
-		argument.put("name", "FreeConversation");
+		argument.put("name", "dialog");
 		argument.put("access_method", "internal_data");
 		argument.put("method", "open_dialog");
 
@@ -51,7 +51,7 @@ public class EtriDao {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> failToAnswer(Map<String, Object> map) {
+	public Map<String, Object> getDialog(Map<String, Object> map) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		Map<String, String> argument = new HashMap<String, String>();
 

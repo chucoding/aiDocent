@@ -1,5 +1,6 @@
 package com.challenge.aidocent.controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.challenge.aidocent.service.ChatService;
 import com.challenge.aidocent.service.EtriService;
 import com.challenge.aidocent.service.GoogleService;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 @RestController
 public class ChatController {
@@ -43,7 +46,7 @@ public class ChatController {
 
 	@CrossOrigin("*")
 	@PostMapping(value = "/chat/{menu}")
-	public Map<String, Object> message(HttpServletRequest req, @RequestBody Map<String, Object> data, @PathVariable String menu) {
+	public Map<String, Object> message(HttpServletRequest req, @RequestBody Map<String, Object> data, @PathVariable String menu) throws JsonParseException, JsonMappingException, IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		System.out.println(MapUtils.getMap(data, "data").get("quiz_type"));
 		if ("quiz".equals(menu)) {
@@ -53,13 +56,12 @@ public class ChatController {
 				map = etriService.quiz_answer(data);
 			}
 		} else if ("dialog".equals(menu))
-			map = chatService.chatmessage(data, req);
+			map = chatService.dialog(data, req);
 		else {
 			map = chatService.chatopen(data);
 		}
 		return map;
 	}
-
 	/*
 	@CrossOrigin("*")
 	@PostMapping(value = "/chat/quiz")

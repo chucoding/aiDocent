@@ -1,7 +1,5 @@
 package com.challenge.aidocent.util;
 
-import java.util.concurrent.TimeUnit;
-
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Repository;
 

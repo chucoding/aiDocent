@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
@@ -16,13 +16,14 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.challenge.aidocent.dao.EtriDao;
 import com.challenge.aidocent.util.CacheUtils;
 import com.challenge.aidocent.util.Dictionary;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class EtriService {
@@ -52,8 +53,11 @@ public class EtriService {
 		}
 		file.transferTo(new File(path));
 
+		String body = chatDao.ObjectDetect(path);
+		saveObjectToCache(body);
+		
 		result.put("file_name", file_name);
-		result.put("body", chatDao.ObjectDetect(path));
+		result.put("body", body);
 		return result;
 
 	}
@@ -267,5 +271,23 @@ public class EtriService {
 		map.put("menu", "null");
 
 		return map;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void saveObjectToCache(String body) throws JsonParseException, JsonMappingException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> map = mapper.readValue(body, Map.class);		
+		Map<String, Object> return_object = (Map<String, Object>) MapUtils.getMap(map, "return_object");
+		cache.put("image_object", return_object);
+		
+		Map<String, Integer> objCntMap = new HashMap<String, Integer>();
+		
+		List<Map<String, Object>> dataList = (List<Map<String, Object>>) MapUtils.getObject(return_object, "data");
+		for(Map<String, Object> data : dataList) {
+			String cl = (String) data.get("class");
+			objCntMap.put(cl, objCntMap.getOrDefault(cl, 0)+1);
+		}
+		cache.put("objCntMap", objCntMap);
+		System.out.println(objCntMap);
 	}
 }
