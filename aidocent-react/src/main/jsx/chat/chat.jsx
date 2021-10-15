@@ -29,6 +29,11 @@ const Chat = (props) => {
     const [quiz_answer, setquiz_answer] = useState("");
     var audio = document.createElement("Audio");
     var tts_path = "http://localhost:8080/aidocent/";
+    var voice_time = null;
+    const init = () => {
+        audio.src = tts_path + "media/first_greeting.mp3";
+        audio.play();
+    }
     const _onVocalStart = () => {
         inputRef.current.clear();
     }
@@ -37,7 +42,9 @@ const Chat = (props) => {
         console.log(result);
         console.log(inputRef.current);
         setQuestion(result);
-        inputRef.current.props.rightButtons.props.onClick();
+        /*  if (result !== "" && result !== undefined) {
+             setTimeout(inputRef.current.props.rightButtons.props.onClick(), 1000);
+         } */
     }
 
     const openChat = () => {
@@ -60,14 +67,19 @@ const Chat = (props) => {
                     setquiz_type(data.quiz_type);
                     setMessages(messages => [...messages, data]);
                     if (data.ttsUrl !== undefined) {
-                        console.log( tts_path + data.ttsUrl);
                         audio.src = tts_path + data.ttsUrl;
                         audio.play();
                     }
-                    if (data.menu == "quiz") {
-                        inputRef.current.clear();
-                        inputRef.current.props.rightButtons.props.onClick();
-                    }
+                    voice_time = setInterval(() => {
+                        console.log(audio.ended)
+                        if (audio.ended) {
+                            if (data.menu == "quiz") {
+                                inputRef.current.clear();
+                                inputRef.current.props.rightButtons.props.onClick();
+                            }
+                            clearInterval(voice_time);
+                        }
+                    }, 100);
                 }).catch(() => {
                     console.log("에러발생");
                 });
@@ -85,6 +97,7 @@ const Chat = (props) => {
             quiz_answer: quiz_answer
         };
         const url = `http://localhost:8080/aidocent/chat/${menu}`;
+        setQuestion("");
         if (menu == "quiz" && (quiz_type == "null" || quiz_type === undefined)) {
             fetch(url, { method: "POST", body: JSON.stringify({ data: answer }), headers: { "Access-Control-Allow-Origin": "*", "content-type": "application/json" } })
                 .then((res) => res.json())
@@ -116,7 +129,6 @@ const Chat = (props) => {
         }
         else if (question != "") {
             setMessages([...messages, answer]);
-            setQuestion("");
             fetch(url, { method: "POST", body: JSON.stringify({ data: answer }), headers: { "Access-Control-Allow-Origin": "*", "content-type": "application/json" } })
                 .then((res) => res.json())
                 .then((data) => {
@@ -128,17 +140,24 @@ const Chat = (props) => {
                         audio.src = tts_path + data.ttsUrl;
                         audio.play();
                     }
-                    if (data.menu === "null") {
-                        setMenu(data.menu);
-                        inputRef.current.clear();
-                        inputRef.current.props.rightButtons.props.onClick();
-                    }
+                    voice_time = setInterval(() => {
+                        console.log(audio.ended)
+                        if (audio.ended) {
+                            if (data.menu === "null") {
+                                setMenu(data.menu);
+                                inputRef.current.clear();
+                                inputRef.current.props.rightButtons.props.onClick();
+                            }
+                            clearInterval(voice_time);
+                        }
+                    }, 100);
+
                 }).catch(() => {
                     console.log("에러발생");
                 });
         }
     };
-
+    useEffect(init, []);
     return (
         <div className="chat">
             <Card sx={{ height: '96vh', marginTop: '1vh' }}>
