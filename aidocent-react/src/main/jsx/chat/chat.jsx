@@ -35,6 +35,7 @@ const Chat = (props) => {
         audio.play();
     }
     const _onVocalStart = () => {
+        setQuestion('');
         inputRef.current.clear();
     }
 
