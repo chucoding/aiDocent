@@ -42,9 +42,9 @@ const Chat = (props) => {
         console.log(result);
         console.log(inputRef.current);
         setQuestion(result);
-        /*  if (result !== "" && result !== undefined) {
-             setTimeout(inputRef.current.props.rightButtons.props.onClick(), 1000);
-         } */
+        if (result !== "" && result !== undefined) {
+            setTimeout(inputRef.current.props.rightButtons.props.onClick(), 1000);
+        }
     }
 
     const openChat = () => {
