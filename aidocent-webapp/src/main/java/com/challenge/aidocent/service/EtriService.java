@@ -120,7 +120,6 @@ public class EtriService {
 		String[] quiz_type = { /*"search",*/ "number", "word"/*, "wiki"*/ };
 		Random rand = new Random();
 		Map<?, ?> is_obj = MapUtils.getMap(data, "data");
-		String voice = is_obj.get("voice").toString();
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> chatbotInfo = new HashMap<String, Object>();
 		chatbotInfo.put("id", "user");
