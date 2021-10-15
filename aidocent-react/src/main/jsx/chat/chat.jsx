@@ -42,10 +42,16 @@ const Chat = (props) => {
     const _onVocalResult = (result) => {
         console.log(result);
         console.log(inputRef.current);
+        inputRef.current.value = result;
         setQuestion(result);
-        if (result !== "" && result !== undefined) {
-            setTimeout(inputRef.current.props.rightButtons.props.onClick(), 1000);
-        }
+        /* if (question !== "" && question !== undefined) {
+            setTimeout(() => {
+                setQuestion(result);
+                inputRef.current.props.rightButtons.props.onClick();
+            }
+                , 1000);
+        } */
+
     }
 
     const openChat = () => {
