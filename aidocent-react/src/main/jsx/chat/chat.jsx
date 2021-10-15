@@ -44,13 +44,13 @@ const Chat = (props) => {
         console.log(inputRef.current);
         inputRef.current.value = result;
         setQuestion(result);
-        /* if (question !== "" && question !== undefined) {
+         if (result !== "" && result !== undefined) {
             setTimeout(() => {
                 setQuestion(result);
                 inputRef.current.props.rightButtons.props.onClick();
             }
                 , 1000);
-        } */
+        } 
 
     }
 
