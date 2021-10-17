@@ -6,8 +6,7 @@ import SendIcon from '@mui/icons-material/Send';
 
 import { MessageList } from 'react-chat-elements'
 import { Input } from 'react-chat-elements'
-import MicIcon from '@mui/icons-material/Mic';
-import UseAnimations from "react-useanimations";
+import Vocal from '@untemps/react-vocal'
 
 import 'react-chat-elements/dist/main.css';
 import AudioRecord from './audio';

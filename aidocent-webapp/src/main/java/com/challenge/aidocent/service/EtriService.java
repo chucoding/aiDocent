@@ -38,6 +38,7 @@ public class EtriService {
 	ChatService chatservice;
 
 	private static final GoogleDao googleDao = new GoogleDao();
+
 	public Map<String, Object> ObjectDetect(HttpServletRequest req, MultipartFile file) throws IllegalStateException, IOException {
 
 		EtriDao chatDao = new EtriDao();
@@ -262,7 +263,8 @@ public class EtriService {
 					}
 					noun[0] = result;
 				}
-				result = noun[0] + "는(은) " + quiz_QNA[1] + " " + dictionary.getDic().get(dictionary.getDic().get(noun[0]) + ".measure") + "입니다.";
+				result = dictionary.getDic().get(noun[0]).toString();
+				result = noun[0] + "는(은) " + quiz_QNA[1] + " " + dictionary.getDic().get(result.replaceAll(" ", "_") + ".measure") + "입니다.";
 			}
 			break;
 		case "word":
