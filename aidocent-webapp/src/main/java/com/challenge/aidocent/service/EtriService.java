@@ -179,6 +179,7 @@ public class EtriService {
 					total += 1;
 				}
 			}
+			System.out.println(select_text.replaceAll(" ", "_") + ".ko");
 			str = dictionary.getDic().get(select_text.replaceAll(" ", "_") + ".ko") + "는(은) 몇 " + dictionary.getDic().get(select_text.replaceAll(" ", "_") + ".measure") + " 인가요?";
 			map.put("id", "chatbot");
 			map.put("text", str);
@@ -192,6 +193,7 @@ public class EtriService {
 
 		case "word":
 			// 답변과 질문
+			System.out.println(select_text.replaceAll(" ", "_") + ".ko");
 			answer = (String) dictionary.getDic().get(select_text.replaceAll(" ", "_") + ".ko");
 			map.put("id", "chatbot");
 			map.put("text", select_text + "의 한글 뜻이 어떻게 되나요?");

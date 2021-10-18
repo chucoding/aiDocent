@@ -98,8 +98,7 @@ public class ChatService {
 		String answer = "";
 		StringTokenizer st = new StringTokenizer(system_text, " ");
 		String intent = st.nextToken().trim();
-		String entity = st.nextToken().trim();
-
+		
 		// 복합질문 처리 어떻게??
 		switch (intent) {
 
@@ -112,8 +111,7 @@ public class ChatService {
 			break;
 		case "exist":
 			Map<String, Integer> objCntMap = (Map<String, Integer>) cache.get("objCntMap");
-			System.out.println(objCntMap);
-			System.out.println(entity);
+			String entity = st.nextToken().trim();
 			System.out.println(MapUtils.getIntValue(objCntMap, entity));
 			System.out.println(objCntMap.get(entity));
 			int cnt = MapUtils.getIntValue(objCntMap, entity);

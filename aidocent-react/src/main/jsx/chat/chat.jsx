@@ -10,8 +10,6 @@ import Vocal from '@untemps/react-vocal'
 
 import 'react-chat-elements/dist/main.css';
 import AudioRecord from './audio';
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import { TramSharp } from "@mui/icons-material";
 
 const Chat = (props) => {
     const [question, setQuestion] = useState("");
@@ -32,16 +30,22 @@ const Chat = (props) => {
     var audio = document.createElement("Audio");
     var tts_path = "http://localhost:8080/aidocent/";
     var voice_time = null;
-    const {
-        transcript,
-        listening,
-        resetTranscript,
-        browserSupportsSpeechRecognition
-    } = useSpeechRecognition();
-
     const init = () => {
+        audio.pause();
         audio.src = tts_path + "media/first_greeting.mp3";
         audio.play();
+    }
+    const _onVocalStart = () => {
+        audio.pause();
+        setQuestion('');
+
+    }
+
+    const _onVocalResult = (result) => {
+
+        setQuestion(result);
+
+
     }
 
     const openChat = () => {
@@ -64,6 +68,7 @@ const Chat = (props) => {
                     setquiz_type(data.quiz_type);
                     setMessages(messages => [...messages, data]);
                     if (data.ttsUrl !== undefined) {
+                        audio.pause();
                         audio.src = tts_path + data.ttsUrl;
                         audio.play();
                     }
@@ -71,7 +76,7 @@ const Chat = (props) => {
                         console.log(audio.ended)
                         if (audio.ended) {
                             if (data.menu == "quiz") {
-                                inputRef.current.clear();
+
                                 inputRef.current.props.rightButtons.props.onClick();
                             }
                             clearInterval(voice_time);
@@ -79,6 +84,8 @@ const Chat = (props) => {
                     }, 100);
                 }).catch(() => {
                     console.log("에러발생");
+                }).finally(()=>{
+                      setQuestion("");
                 });
         }
     };
@@ -94,7 +101,6 @@ const Chat = (props) => {
             quiz_answer: quiz_answer
         };
         const url = `http://localhost:8080/aidocent/chat/${menu}`;
-        setQuestion("");
         if (menu == "quiz" && (quiz_type == "null" || quiz_type === undefined)) {
             fetch(url, { method: "POST", body: JSON.stringify({ data: answer }), headers: { "Access-Control-Allow-Origin": "*", "content-type": "application/json" } })
                 .then((res) => res.json())
@@ -104,11 +110,14 @@ const Chat = (props) => {
                     setquiz_answer(data.answer);
                     setMessages(messages => [...messages, data]);
                     if (data.ttsUrl !== undefined) {
+                        audio.pause();
                         audio.src = tts_path + data.ttsUrl;
                         audio.play();
                     }
                 }).catch(() => {
                     console.log("에러발생");
+                }).finally(()=>{
+                      setQuestion("");
                 });
         } else if (menu === "null" || menu === "" || menu === undefined) {
             fetch(url, { method: "POST", body: JSON.stringify({ data: answer }), headers: { "Access-Control-Allow-Origin": "*", "content-type": "application/json" } })
@@ -117,11 +126,14 @@ const Chat = (props) => {
                     console.log(data);
                     setMessages(messages => [...messages, data]);
                     if (data.ttsUrl !== undefined) {
+                        audio.pause();
                         audio.src = tts_path + data.ttsUrl;
                         audio.play();
                     }
                 }).catch(() => {
                     console.log("에러발생");
+                }).finally(()=>{
+                      setQuestion("");
                 });
         }
         else if (question != "") {
@@ -134,6 +146,7 @@ const Chat = (props) => {
                     setquiz_answer(data.quiz_answer);
                     setMessages(messages => [...messages, data]);
                     if (data.ttsUrl !== undefined) {
+                        audio.pause();
                         audio.src = tts_path + data.ttsUrl;
                         audio.play();
                     }
@@ -142,7 +155,7 @@ const Chat = (props) => {
                         if (audio.ended) {
                             if (data.menu === "null") {
                                 setMenu(data.menu);
-                                inputRef.current.clear();
+
                                 inputRef.current.props.rightButtons.props.onClick();
                             }
                             clearInterval(voice_time);
@@ -151,13 +164,17 @@ const Chat = (props) => {
 
                 }).catch(() => {
                     console.log("에러발생");
+                }).finally(()=>{
+                      setQuestion("");
                 });
         }
     };
-
     useEffect(init, []);
-    console.log(inputRef.current);
-
+    useEffect(() => {
+        if (question != "") {
+            menu === "" || typeof menu === 'undefined' ? openChat() : getAnswer();
+        }
+    }, [question]);
     return (
         <div className="chat">
             <Card sx={{ height: '96vh', marginTop: '1vh' }}>
@@ -169,57 +186,28 @@ const Chat = (props) => {
                         dataSource={messages}
                     />
                 </CardContent>
-                <CardContent>
-                    <Input
-                        defaultValue={transcript}
-                        value={transcript}
-                        placeholder="메시지를 입력하시오"
-                        multiline={false}
-                        onChange={(e) => setQuestion(e.target.value)}
-                        ref={el => (inputRef.current = el)}
-                        onKeyDown={e => {
-                            let lastMessage = messages[messages.length - 1];
-                            let menu = lastMessage.menu;
-                            if (e.key === 'Enter') {
-                                menu === "" || typeof menu === 'undefined' ? openChat() : getAnswer();
-                                e.target.value = "";
-                            }
-                        }}
-                        
-                        leftButtons={
-                                listening ?
-                                <div onClick={()=>{
-                                    SpeechRecognition.stopListening();
-                                    console.log(1);
-                                    let lastMessage = messages[messages.length - 1];
-                                    let menu = lastMessage.menu;
-                                    menu === "" || typeof menu === 'undefined' ? openChat() : getAnswer();
-    
-                                    inputRef.current.clear();
-                                }}>
-                                    <IconButton>
-                                        <UseAnimations animationKey="activity" />
-                                    </IconButton>
-                                </div> :
-                                <div onClick={SpeechRecognition.startListening}>
-                                    <IconButton>
-                                        <MicIcon />
-                                    </IconButton>
-                                </div>
-                            //<AudioRecord messages={messages} setMessages={setMessages} setInputStyle={setInputStyle} />
-                        }
-                        rightButtons={
-                            <div onClick={() => {
-                                let lastMessage = messages[messages.length - 1];
-                                let menu = lastMessage.menu;
-                                menu === "" || typeof menu === 'undefined' ? openChat() : getAnswer();
 
-                                inputRef.current.clear();
-                            }} >
-                                <IconButton aria-label="전송" ><SendIcon /></IconButton>
-                            </div>
-                        }
+                <CardContent className="rce-container-input">
+                    <Vocal
+                        onStart={_onVocalStart}
+                        onResult={_onVocalResult}
+                        lang="ko-KR"
+                        style={{ display: 'flex', flexDirection: 'row', margin: '5px' }}
                     />
+                    <input class="rce-input" placeholder="메시지를 입력하시오" onChange={(e) => setQuestion(e.target.value)} onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            menu === "" || typeof menu === 'undefined' ? openChat() : getAnswer();
+                            e.target.value = "";
+                        }
+                    }} value={question} />
+                    <div class="rce-input-buttons" onClick={() => {
+                        let lastMessage = messages[messages.length - 1];
+                        let menu = lastMessage.menu;
+                        menu === "" || typeof menu === 'undefined' ? openChat() : getAnswer();
+
+                    }}>
+                        <IconButton aria-label="전송" ><SendIcon /></IconButton>
+                    </div>
                 </CardContent>
             </Card>
         </div>
