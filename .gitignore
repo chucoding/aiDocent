@@ -2,7 +2,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/java,react,linux,maven,gradle,eclipse,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,react,linux,maven,gradle,eclipse,windows
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
+ 
 ### Eclipse ###
 .metadata
 bin/
